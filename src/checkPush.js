@@ -66,6 +66,7 @@ function checkSHAs(remoteShaArg, localShaArg) {
     printInfo(
       `Remote and local SHA are the same (${remoteSha}); exiting with code 0`
     );
+    process.exit(0);
   }
 
   return {
