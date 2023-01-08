@@ -116,7 +116,7 @@ export async function checkPush(remoteShaArg, localShaArg) {
       }:`
     );
     violations.forEach((violation, index) => {
-      printViolation(index, violation);
+      printViolation(index + 1, violation);
     });
     printEmptyLine();
   }
