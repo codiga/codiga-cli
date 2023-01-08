@@ -5,7 +5,7 @@
   "homepage": "https://github.com/codiga/codiga-cli",
   "repository": {
     "type": "git",
-    "url": "git@github.com:codiga/codiga-cli.git"
+    "url": "git+ssh://git@github.com/codiga/codiga-cli.git"
   },
   "main": "src/cli.js",
   "bin": {
@@ -44,5 +44,16 @@
     "cross-env": "^7.0.3",
     "jest": "^29.3.1",
     "tempy": "^1.0.1"
+  },
+  "bugs": {
+    "url": "https://github.com/codiga/codiga-cli/issues"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "author": {
+    "name": "Codiga",
+    "email": "support@codiga.io",
+    "url": "https://www.codiga.io"
   }
 }
