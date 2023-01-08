@@ -14,9 +14,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    
-  ],
   "scripts": {
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
