@@ -1,7 +1,6 @@
 import fetch from "node-fetch";
 import {
-  GRAPHQL_STAGING_URL,
-  // GRAPHQL_PROD_URL,
+  GRAPHQL_PROD_URL,
   ROSIE_URL,
   API_TOKEN_HEADER,
   USER_AGENT_CLI,
@@ -9,7 +8,6 @@ import {
 } from "./constants";
 import { request } from "graphql-request";
 import { getToken } from "./store";
-import { printError } from "./print";
 
 /**
  * Run a query against the Codiga Graphql API
@@ -26,7 +24,7 @@ export async function codigaApiFetch(query, variables = null, apiToken = null) {
   };
   // run the request against the Codiga API
   return await request({
-    url: GRAPHQL_STAGING_URL,
+    url: GRAPHQL_PROD_URL,
     document: query,
     variables,
     requestHeaders,
