@@ -17,19 +17,12 @@ export function setToken(token) {
  * @returns {string?} api token
  */
 export function getToken() {
-  const hello = () => "hello";
   return store.get(STORE_API_TOKEN, null);
 }
 
 /**
  * Remove an API token for a user
- * @returns {string?} api token
  */
 export function deleteToken() {
   store.delete(STORE_API_TOKEN);
 }
-
-export const obj = {
-  hello: () => "hello",
-  goodbye: () => "goodbye",
-};
