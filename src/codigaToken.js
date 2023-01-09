@@ -9,7 +9,7 @@ import {
   printSuccess,
   printCommandSuggestion,
 } from "../utils/print";
-import { setToken, getToken, deleteToken } from "../utils/store";
+import { setToken, getToken, deleteToken, store } from "../utils/store";
 
 /**
  * Returns the user details for a valid API token
@@ -41,6 +41,7 @@ export async function checkCodigaToken() {
       printSuccess(
         `A valid API token was found for ${user.username} (${user.accountType})`
       );
+      printSuggestion(`Tokens can be found here:`, store.path);
       printCommandSuggestion(
         " ↳ If you wish to override it, run one of the following commands:",
         ACTION_TOKEN_ADD
@@ -48,6 +49,7 @@ export async function checkCodigaToken() {
       process.exit(0);
     } else {
       printInfo("An invalid token was found");
+      printSuggestion(`Tokens can be found here:`, store.path);
       printCommandSuggestion(
         " ↳ To override it, run one of the following commands:",
         ACTION_TOKEN_ADD
@@ -88,6 +90,7 @@ export async function addCodigaToken() {
         printSuccess(
           `Codiga API token added for ${user.username} (${user.accountType})`
         );
+        printSuggestion(`Tokens can be found here:`, store.path);
         process.exit(0);
       } else {
         printFailure("That token is not valid");
@@ -114,6 +117,7 @@ export async function deleteCodigaToken() {
     // ensure the token was deleted
     if (getToken()) {
       printFailure("We couldn't delete your Codiga API token");
+      printSuggestion(`Tokens can be found here:`, store.path);
       printSuggestion(
         " ↳ If the issue persists, contact us at:",
         "https://app.codiga.io/support"
@@ -121,6 +125,7 @@ export async function deleteCodigaToken() {
       process.exit(1);
     } else {
       printSuccess("Codiga API token deleted");
+      printSuggestion(`Tokens can be found here:`, store.path);
       printCommandSuggestion(
         " ↳ To set a Codiga API token, run one of the following commands:",
         ACTION_TOKEN_ADD
