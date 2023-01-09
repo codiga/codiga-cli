@@ -43,10 +43,24 @@ export function printInfo(text) {
 /**
  * Used to indicate a follow-up action
  * @param {string} text
- * @param {string} command
+ * @param {string} suggestion
  */
-export function printSuggestion(text, command) {
-  console.log(text, chalk.magenta(command));
+export function printSuggestion(text, suggestion) {
+  console.log(text, chalk.magenta(suggestion));
+}
+
+/**
+ * Used to show suggested command follow ups
+ * @param {string} text
+ * @param {string} suggestion
+ */
+export function printCommandSuggestion(text, command) {
+  console.log(
+    text,
+    chalk.magenta(`codiga ${command}`),
+    "or",
+    chalk.magenta(`npx @codiga/cli ${command}`)
+  );
 }
 
 /**
