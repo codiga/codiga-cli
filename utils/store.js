@@ -2,7 +2,7 @@ import Conf from "conf";
 import { STORE_API_TOKEN } from "./constants";
 
 // create a config instance
-const store = new Conf();
+export const store = new Conf();
 
 /**
  * Saves an API token for a user
