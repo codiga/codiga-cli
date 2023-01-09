@@ -2,7 +2,7 @@ import fs from "fs";
 import YAML from "yaml";
 import { extname } from "path";
 import { ROSIE_SUPPORTED_SUFFIX_TO_LANGUAGE } from "./constants";
-import { printError } from "./print";
+import { printFailure } from "./print";
 
 /**
  * read a file contents
@@ -14,7 +14,7 @@ export function readFile(path) {
     const file = fs.readFileSync(path, "utf8");
     return file;
   } catch (err) {
-    printError(`unable to read file: ${path}`, "004");
+    printFailure(`Unable to read file: ${path}`);
     process.exit(1);
   }
 }
@@ -29,7 +29,7 @@ export function parseYamlFile(content, path) {
     const parsedFile = YAML.parse(content);
     return parsedFile;
   } catch (err) {
-    printError(`unable to parse YAML file${path ? `: ${path}` : ""}`, "005");
+    printFailure(`Unable to parse YAML file${path ? `: ${path}` : ""}`);
     process.exit(1);
   }
 }

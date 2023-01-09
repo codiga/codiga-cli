@@ -8,15 +8,6 @@ export function printEmptyLine() {
 }
 
 /**
- * Used to print an error code and message for errors that need more explanation
- * @param {string} text
- * @param {string} code
- */
-export function printError(text, code) {
-  console.error(`%s: ${text}`, chalk.red.bold(`ERROR (${code})`));
-}
-
-/**
  * Used to indicate something negative and needs the user's attention
  * @param {string} text
  */

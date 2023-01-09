@@ -1,5 +1,5 @@
 import child_process from "child_process";
-import { printError } from "./print";
+import { printFailure } from "./print";
 
 /**
  * Executes a git command with the given args in that order
@@ -14,8 +14,6 @@ export function executeGitCommand(args) {
   } catch (err) {
     // console.debug(err)
     return null;
-    // printError("unable to execute a git command", "003");
-    // process.exit(2);
   }
 }
 
@@ -28,7 +26,9 @@ export function getRootDirectory() {
   if (rootDirectory) {
     return rootDirectory.split("\n").join("");
   } else {
-    printError("unable to execute a git command", "003");
+    printFailure(
+      "Unable to execute a git command because you're not in a git repository"
+    );
     process.exit(1);
   }
 }

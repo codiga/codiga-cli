@@ -3,7 +3,7 @@ import { codigaApiFetch } from "./api";
 import { ACTION_TOKEN_ADD, CODIGA_CONFIG_FILE } from "./constants";
 import { getRootDirectory } from "./git";
 import { GET_RULESETS_FOR_CLIENT } from "../graphql/queries";
-import { printCommandSuggestion, printError } from "./print";
+import { printCommandSuggestion, printFailure } from "./print";
 
 /**
  * Gets an array of rulesets and their rules
@@ -16,7 +16,7 @@ export async function getRulesetsWithRules(names) {
     return rulesetsWithRules;
   } catch (err) {
     // console.debug(err);
-    printError("Unable to fetch your rulesets", "008");
+    printFailure("We were unable to fetch your rulesets");
     printCommandSuggestion(
       " ↳ Set a Codiga API token with one of the following commands:",
       ACTION_TOKEN_ADD
@@ -39,13 +39,13 @@ export function getRulesetsFromCodigaFile() {
 
   // if there isn't a rulesets value in the codiga.yml file, throw an error
   if (!parsedFile) {
-    printError("no rulesets value found in codiga.yml", "006");
+    printFailure("No rulesets value found in your `codiga.yml` file");
     process.exit(1);
   }
 
   // if there aren't any ruleset items under `rulesets:` in the codiga.yml file, throw an error
   if (!parsedFile.rulesets) {
-    printError("no rulesets found in codiga.yml", "007");
+    printFailure("No rulesets found in your `codiga.yml` file");
     process.exit(1);
   }
 
