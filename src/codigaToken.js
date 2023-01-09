@@ -12,20 +12,20 @@ import {
 import { setToken, getToken, deleteToken } from "../utils/store";
 
 /**
- * Returns whether an API token is valid
+ * Returns the user details for a valid API token
  * @param {string} apiToken the token string to check
- * @returns {Promise<boolean>} whether the token is valid
+ * @returns {Promise<{id: string, accountType: string, username: string}?>} the user if a valid token
  */
-async function checkIfTokenIsValid(apiToken) {
+async function getUserInfoFromToken(apiToken) {
   try {
     const resp = await codigaApiFetch(CHECK_USER, null, apiToken);
     if (resp?.user?.id) {
-      return true;
+      return resp.user;
     } else {
-      return false;
+      return null;
     }
   } catch (err) {
-    return false;
+    return null;
   }
 }
 
@@ -36,8 +36,11 @@ async function checkIfTokenIsValid(apiToken) {
 export async function checkCodigaToken() {
   const token = getToken();
   if (token) {
-    if (await checkIfTokenIsValid(token)) {
-      printSuccess("A valid API token was found.");
+    const user = await getUserInfoFromToken(token);
+    if (!!user) {
+      printSuccess(
+        `A valid API token was found for ${user.username} (${user.accountType})`
+      );
       printCommandSuggestion(
         " ↳ If you wish to override it, run one of the following commands:",
         ACTION_TOKEN_ADD
@@ -79,9 +82,12 @@ export async function addCodigaToken() {
       },
     ])
     .then(async ({ apiToken }) => {
-      if (await checkIfTokenIsValid(apiToken)) {
+      const user = await getUserInfoFromToken(apiToken);
+      if (!!user) {
         setToken(apiToken);
-        printSuccess("Codiga API token added");
+        printSuccess(
+          `Codiga API token added for ${user.username} (${user.accountType})`
+        );
         process.exit(0);
       } else {
         printFailure("That token is not valid");
@@ -108,13 +114,21 @@ export async function deleteCodigaToken() {
     // ensure the token was deleted
     if (getToken()) {
       printFailure("We couldn't delete your Codiga API token");
+      printSuggestion(
+        " ↳ If the issue persists, contact us at:",
+        "https://app.codiga.io/support"
+      );
       process.exit(1);
     } else {
-      printSuccess("Codiga API token deleted.");
+      printSuccess("Codiga API token deleted");
+      printCommandSuggestion(
+        " ↳ To set a Codiga API token, run one of the following commands:",
+        ACTION_TOKEN_ADD
+      );
       process.exit(0);
     }
   } else {
-    printInfo("No Codiga API token was found to delete.");
+    printInfo("No Codiga API token was found to delete");
     printCommandSuggestion(
       " ↳ To set a Codiga API token, run one of the following commands:",
       ACTION_TOKEN_ADD

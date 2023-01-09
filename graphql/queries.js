@@ -4,6 +4,8 @@ export const CHECK_USER = gql`
   query checkUser {
     user {
       id
+      accountType
+      username
     }
   }
 `;
