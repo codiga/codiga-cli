@@ -26,7 +26,6 @@ import {
 function parseCommand(args) {
   // get all the commands
   const yargV = yargs(args.slice(2))
-    .help(true)
     .command(ACTION_TOKEN_ADD, "Add and save your Codiga API token")
     .command(
       ACTION_TOKEN_CHECK,
@@ -37,20 +36,21 @@ function parseCommand(args) {
       "Delete a saved Codiga API token from your system"
     )
     .command(
-      ACTION_GIT_PUSH_HOOK,
-      "Use in a git pre-push hook to check for new violations between two commits"
+      `${ACTION_GIT_PUSH_HOOK} [options]`,
+      "Use in a git pre-push hook to check for new violations between two commits",
+      {
+        [OPTION_LOCAL_SHA]: {
+          describe: "The local SHA being pushed",
+          type: "string",
+        },
+        [OPTION_REMOTE_SHA]: {
+          describe:
+            "The remote SHA (If new branch, our CLI passes it automatically)",
+          type: "string",
+        },
+      }
     )
-    .options({
-      [OPTION_REMOTE_SHA]: {
-        describe:
-          "The remote SHA (If new branch, our CLI passes it automatically)",
-        type: "string",
-      },
-      [OPTION_LOCAL_SHA]: {
-        describe: "The local SHA being pushed",
-        type: "string",
-      },
-    }).argv;
+    .help(true).argv;
 
   // format any actions into a single object with default values
   const actions = {
