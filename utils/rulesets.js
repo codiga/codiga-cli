@@ -3,7 +3,12 @@ import { codigaApiFetch } from "./api";
 import { ACTION_TOKEN_ADD, CODIGA_CONFIG_FILE } from "./constants";
 import { getRootDirectory } from "./git";
 import { GET_RULESETS_FOR_CLIENT } from "../graphql/queries";
-import { printCommandSuggestion, printFailure, printSuggestion } from "./print";
+import {
+  printCommandSuggestion,
+  printFailure,
+  printInfo,
+  printSuggestion,
+} from "./print";
 
 /**
  * Gets an array of rulesets and their rules
@@ -39,20 +44,30 @@ export function getRulesetsFromCodigaFile() {
 
   // if there isn't a rulesets value in the codiga.yml file, throw an error
   if (!parsedFile) {
-    printFailure("There is no rulesets value in your `codiga.yml` file");
+    printFailure("We couldn't find a `rulesets` value to get rulesets from");
     printSuggestion(
       " ↳ Ensure you have a `rulesets:` value in: ",
       codigaFileLocation
+    );
+    printSuggestion(
+      " ↳ You can search for rulesets here:",
+      "https://app.codiga.io/hub/rulesets"
     );
     process.exit(1);
   }
 
   // if there aren't any ruleset items under `rulesets:` in the codiga.yml file, throw an error
   if (!parsedFile.rulesets) {
-    printFailure("There were no rulesets found in your `codiga.yml` file");
+    printFailure(
+      "We can't look for violations is there are no rulesets listed in your `codiga.yml` file"
+    );
     printSuggestion(
       " ↳ Ensure you have rulesets listed in: ",
       codigaFileLocation
+    );
+    printSuggestion(
+      " ↳ You can search for more rulesets here:",
+      "https://app.codiga.io/hub/rulesets"
     );
     process.exit(1);
   }
