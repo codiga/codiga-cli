@@ -2,37 +2,6 @@
 
 Get more information below regarding a specific error code you received.
 
-## E001
-
-Either you ran an empty `codiga` command or you provide an incorrect action.
-
-```bash
-# Bad
-codiga
-codiga token-chk
-codiga token-dlte
-
-# Good
-codiga --help
-codiga token-check
-codiga token-delete
-```
-
-## E002
-
-More than one action was passed. You need to split your commands into multiple invocations.
-
-```bash
-# Bad
-codiga token-check token-add
-codiga token-add token-delete
-
-# Good
-codiga token-check
-codiga token-add
-codiga token-delete
-```
-
 ## E003
 
 We were unable to execute a git command. Please ensure you run your command within a git directory.

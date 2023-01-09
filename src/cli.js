@@ -8,7 +8,7 @@ import {
   OPTION_LOCAL_SHA,
   OPTION_REMOTE_SHA,
 } from "../utils/constants";
-import { printError } from "../utils/print";
+import { printEmptyLine, printFailure } from "../utils/print";
 import { checkPush } from "./checkPush";
 import {
   addCodigaToken,
@@ -63,19 +63,15 @@ function parseCommand(args) {
 
   // we need at least one action
   if (numOfActionsReceived === 0) {
-    printError(
-      "no valid <action> detected; you need to provide an <action> command",
-      "001"
-    );
+    printEmptyLine();
+    yargs.showHelp();
+    printEmptyLine();
     process.exit(1);
   }
 
   // more than one action isn't supported
   if (numOfActionsReceived > 1) {
-    printError(
-      "more than one <action> detected; provide only one <action> command",
-      "002"
-    );
+    printFailure("Combining two command actions together isn't supported");
     process.exit(1);
   }
 
@@ -117,10 +113,9 @@ export async function cli(args) {
       return await checkPush(remoteSha, localSha);
     default:
       return (() => {
-        printError(
-          "no valid <action> detected; you need to provide an <action> command",
-          "001"
-        );
+        printEmptyLine();
+        yargs.showHelp();
+        printEmptyLine();
         process.exit(1);
       })();
   }
