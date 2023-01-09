@@ -1,9 +1,9 @@
 import { readFile, parseYamlFile } from "../utils/file";
 import { codigaApiFetch } from "./api";
-import { ACTION_TOKEN_CHECK, CODIGA_CONFIG_FILE } from "./constants";
+import { ACTION_TOKEN_ADD, CODIGA_CONFIG_FILE } from "./constants";
 import { getRootDirectory } from "./git";
 import { GET_RULESETS_FOR_CLIENT } from "../graphql/queries";
-import { printError, printSuggestion } from "./print";
+import { printCommandSuggestion, printError } from "./print";
 
 /**
  * Gets an array of rulesets and their rules
@@ -17,9 +17,9 @@ export async function getRulesetsWithRules(names) {
   } catch (err) {
     // console.debug(err);
     printError("Unable to fetch your rulesets", "008");
-    printSuggestion(
-      " ↳ Ensure you have a Codiga API token set with the following command:",
-      `codiga ${ACTION_TOKEN_CHECK}`
+    printCommandSuggestion(
+      " ↳ Set a Codiga API token with one of the following commands:",
+      ACTION_TOKEN_ADD
     );
     process.exit(1);
   }

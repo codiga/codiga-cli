@@ -7,6 +7,7 @@ import {
   printFailure,
   printInfo,
   printSuccess,
+  printCommandSuggestion,
 } from "../utils/print";
 import { setToken, getToken, deleteToken } from "../utils/store";
 
@@ -37,24 +38,24 @@ export async function checkCodigaToken() {
   if (token) {
     if (await checkIfTokenIsValid(token)) {
       printSuccess("A valid API token was found.");
-      printSuggestion(
-        " ↳ If you wish to override it, run the following command:",
-        `codiga ${ACTION_TOKEN_ADD}`
+      printCommandSuggestion(
+        " ↳ If you wish to override it, run one of the following commands:",
+        ACTION_TOKEN_ADD
       );
       process.exit(0);
     } else {
       printInfo("An invalid token was found");
-      printSuggestion(
-        " ↳ To override it, run the following command:",
-        `codiga ${ACTION_TOKEN_ADD}`
+      printCommandSuggestion(
+        " ↳ To override it, run one of the following commands:",
+        ACTION_TOKEN_ADD
       );
       process.exit(0);
     }
   } else {
     printInfo("No token was found.");
-    printSuggestion(
-      " ↳ To set an API token, run the following command:",
-      `codiga ${ACTION_TOKEN_ADD}`
+    printCommandSuggestion(
+      " ↳ To set an API token, run one of the following commands:",
+      ACTION_TOKEN_ADD
     );
     process.exit(1);
   }
@@ -114,9 +115,9 @@ export async function deleteCodigaToken() {
     }
   } else {
     printInfo("No Codiga API token was found to delete.");
-    printSuggestion(
-      " ↳ To set a Codiga API token, run the following command:",
-      `codiga ${ACTION_TOKEN_ADD}`
+    printCommandSuggestion(
+      " ↳ To set a Codiga API token, run one of the following commands:",
+      ACTION_TOKEN_ADD
     );
     process.exit(1);
   }

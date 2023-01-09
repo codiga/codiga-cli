@@ -8,7 +8,11 @@ import {
   OPTION_LOCAL_SHA,
   OPTION_REMOTE_SHA,
 } from "../utils/constants";
-import { printEmptyLine, printFailure } from "../utils/print";
+import {
+  printCommandSuggestion,
+  printEmptyLine,
+  printFailure,
+} from "../utils/print";
 import { checkPush } from "./checkPush";
 import {
   addCodigaToken,
@@ -72,6 +76,7 @@ function parseCommand(args) {
   // more than one action isn't supported
   if (numOfActionsReceived > 1) {
     printFailure("Combining two command actions together isn't supported");
+    printCommandSuggestion("View available commands by running:", "--help");
     process.exit(1);
   }
 
