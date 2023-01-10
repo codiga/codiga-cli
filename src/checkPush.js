@@ -145,6 +145,17 @@ export async function checkPush(remoteShaArg, localShaArg) {
   if (violations.length === 0 && errors.length === 0) {
     process.exit(0);
   } else {
+    printEmptyLine();
+    printInfo("Do you consider these violations as false positives?");
+    printSuggestion(
+      " ↳ You can add the following flag to your `git push` to bypass this check:",
+      "--no-verify"
+    );
+    printSuggestion(
+      " ↳ Consider commenting on those rules in the Codiga Hub, so the maintainer can improve them:",
+      "https://app.codiga.io/hub/rulesets"
+    );
+    printEmptyLine();
     process.exit(1);
   }
 }
