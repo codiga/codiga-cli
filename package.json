@@ -1,6 +1,6 @@
 {
   "name": "@codiga/cli",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A Codiga CLI used to integrate Codiga easily in your projects",
   "homepage": "https://github.com/codiga/codiga-cli",
   "repository": {
