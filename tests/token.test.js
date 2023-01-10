@@ -10,16 +10,29 @@ import { executeCommand, deleteFile, SAMPLE_TOKEN } from "./test-utils";
 jest.mock("inquirer");
 const { prompt, expectPrompts } = require("inquirer");
 
-beforeEach(async () => {
-  // delete our testing config file before starting
-  deleteFile(store.path);
-});
+function setup() {
+  beforeEach(() => {
+    // delete our testing config file before starting
+    deleteFile(store.path);
+    // suppress logs
+    global.console = {
+      log: jest.fn(),
+    };
+  });
+  afterEach(() => {
+    global.console = {
+      log: console.log,
+    };
+  });
+}
 
 test("ensure we're using a temp store folder", () => {
   expect(store.path).toMatch(/cli-testing/);
 });
 
 describe("codiga token-add", () => {
+  setup();
+
   test("first notice shows", async () => {
     // run the command
     await executeCommand([ACTION_TOKEN_ADD]).catch(({ stdout }) => {
@@ -101,6 +114,8 @@ describe("codiga token-add", () => {
 });
 
 describe("codiga token-check", () => {
+  setup();
+
   test("no token", async () => {
     // run the command
     await executeCommand([ACTION_TOKEN_CHECK]).catch(({ stdout }) => {
@@ -130,6 +145,8 @@ describe("codiga token-check", () => {
 });
 
 describe("codiga token-delete", () => {
+  setup();
+
   test("no token found", async () => {
     // run the command
     await executeCommand([ACTION_TOKEN_DELETE]).catch(({ stdout }) => {
