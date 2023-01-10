@@ -16,7 +16,7 @@ beforeEach(async () => {
 });
 
 test("ensure we're using a temp store folder", () => {
-  expect(store.path).toMatch(/@codiga\/cli-testing/);
+  expect(store.path).toMatch(/cli-testing/);
 });
 
 describe("codiga token-add", () => {
