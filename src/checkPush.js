@@ -19,6 +19,7 @@ import {
   printViolation,
 } from "../utils/print";
 import { BLANK_SHA } from "../utils/constants";
+import { isTestMode } from "../tests/test-utils";
 
 /**
  * Gets the changed file paths between two SHAs
@@ -43,7 +44,7 @@ function getChangedFilePaths(remoteSHA, localSHA) {
  * @param {string} localShaArg
  * @returns {{ remoteSha: string, localSha: string }} updated SHAs strings
  */
-function checkSHAs(remoteShaArg, localShaArg) {
+export function checkSHAs(remoteShaArg, localShaArg) {
   let remoteSha = remoteShaArg;
   let localSha = localShaArg;
 
@@ -67,6 +68,13 @@ function checkSHAs(remoteShaArg, localShaArg) {
       `Remote and local SHA are the same (${remoteSha}); exiting with code 0`
     );
     process.exit(0);
+  }
+
+  if (isTestMode) {
+    return {
+      remoteSha: remoteShaArg,
+      localSha: localShaArg,
+    };
   }
 
   return {

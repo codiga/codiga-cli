@@ -1,5 +1,6 @@
 import child_process from "child_process";
 import { printFailure } from "./print";
+import { isTestMode } from "../tests/test-utils";
 
 /**
  * Executes a git command with the given args in that order
@@ -22,6 +23,10 @@ export function executeGitCommand(args) {
  * @returns the directory string or exits if there isn't one
  */
 export function getRootDirectory() {
+  // if we're in test mode we'll skip this check
+  if (isTestMode) return "./tests/fixtures";
+
+  // now look for a git repository
   const rootDirectory = executeGitCommand(["rev-parse", "--show-toplevel"]);
   if (rootDirectory) {
     return rootDirectory.split("\n").join("");
@@ -74,6 +79,7 @@ export function getMainBranch() {
 }
 
 export function findClosestSha() {
+  if (isTestMode) return null;
   const currentBranch = getCurrentBranch();
   const mainBranch = getMainBranch();
   let closestSha = null;

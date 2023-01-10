@@ -59,7 +59,7 @@ export function getRulesetsFromCodigaFile() {
   // if there aren't any ruleset items under `rulesets:` in the codiga.yml file, throw an error
   if (!parsedFile.rulesets) {
     printFailure(
-      "We can't look for violations is there are no rulesets listed in your `codiga.yml` file"
+      "We can't look for violations if there are no rulesets listed in your `codiga.yml` file"
     );
     printSuggestion(
       " ↳ Ensure you have rulesets listed in: ",

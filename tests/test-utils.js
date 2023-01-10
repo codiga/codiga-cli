@@ -12,6 +12,19 @@ export const TEST_USER = {
   accountType: "Github",
 };
 
+export const CODIGA_CONFIG_MISSING_RULESETS = `
+`;
+
+export const CODIGA_CONFIG_MISSING_RULESETS_LIST = `
+rulesets:
+`;
+
+export const CODIGA_CONFIG_MISSING_RULESETS_VALID = `
+rulesets:
+  - react-best-practices
+  - jsx-a11y
+`;
+
 export const executeCommand = async (args) => {
   try {
     return child_process.execSync(`codiga ${args.join(" ")}`, {
