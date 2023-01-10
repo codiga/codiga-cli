@@ -3,12 +3,8 @@ import { codigaApiFetch } from "./api";
 import { ACTION_TOKEN_ADD, CODIGA_CONFIG_FILE } from "./constants";
 import { getRootDirectory } from "./git";
 import { GET_RULESETS_FOR_CLIENT } from "../graphql/queries";
-import {
-  printCommandSuggestion,
-  printFailure,
-  printInfo,
-  printSuggestion,
-} from "./print";
+import { printCommandSuggestion, printFailure, printSuggestion } from "./print";
+import { getToken } from "./store";
 
 /**
  * Gets an array of rulesets and their rules
@@ -16,6 +12,9 @@ import {
  */
 export async function getRulesetsWithRules(names) {
   try {
+    if (!getToken()) {
+      throw new Error("Not Authorized");
+    }
     const resp = await codigaApiFetch(GET_RULESETS_FOR_CLIENT, { names });
     const rulesetsWithRules = resp.ruleSetsForClient || [];
     return rulesetsWithRules;
