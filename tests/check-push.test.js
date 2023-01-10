@@ -1,6 +1,5 @@
 import { ACTION_GIT_PUSH_HOOK, BLANK_SHA } from "../utils/constants";
-import { setToken } from "../utils/store";
-import { executeCommand, SAMPLE_TOKEN } from "./test-utils";
+import { executeCommand } from "./test-utils";
 
 describe("codiga git-push-hook", () => {
   test("check for same SHAs", async () => {

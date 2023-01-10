@@ -6,31 +6,41 @@ import { getRulesForRosiePerLanguage } from "./rules";
 import { printEmptyLine, printFailure, printInfo, printSubItem } from "./print";
 
 /**
- *
+ * Used to filter out unsupported language files and
+ * combine similar language files together
+ * @param {string[]} paths
+ * @returns {{notSupported: string[], 'language': string[]}}
+ */
+export function managePathsBySupportAndLanguage(paths) {
+  return paths.reduce(
+    (acc, path) => {
+      const fileLanguage = getLanguageForFile(path);
+      if (!fileLanguage) {
+        acc.notSupported.push(path);
+      } else {
+        if (acc[fileLanguage]) {
+          acc[fileLanguage].push(path);
+        } else {
+          acc[fileLanguage] = [path];
+        }
+      }
+      return acc;
+    },
+    {
+      notSupported: [],
+    }
+  );
+}
+
+/**
+ * Run a Rosie check on the given paths against with the given rules
  * @param {string[]} paths
  * @param {RosieRule} rules
  */
 export async function analyzeFiles(paths, rules) {
   try {
     // we won't analyze files for languages that aren't supported
-    const files = paths.reduce(
-      (acc, path) => {
-        const fileLanguage = getLanguageForFile(path);
-        if (!fileLanguage) {
-          acc.notSupported.push(path);
-        } else {
-          if (acc[fileLanguage]) {
-            acc[fileLanguage].push(path);
-          } else {
-            acc[fileLanguage] = [path];
-          }
-        }
-        return acc;
-      },
-      {
-        notSupported: [],
-      }
-    );
+    const files = managePathsBySupportAndLanguage(paths);
 
     printEmptyLine();
     // if there's are unsupported files we'll log that with a notice
