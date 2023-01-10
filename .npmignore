@@ -1,0 +1,8 @@
+DEVELOPMENT.md
+tests
+coverage
+babel.config.js
+jest.config.js
+.github
+.vscode
+codiga-cli*.tgz
