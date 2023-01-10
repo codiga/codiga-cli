@@ -1,8 +1,14 @@
 import Conf from "conf";
+import { isTestMode } from "../tests/test-utils";
 import { STORE_API_TOKEN } from "./constants";
 
-// create a config instance
-export const store = new Conf();
+/**
+ * Get a store instance
+ * For testing, we'll get a temporary folder
+ */
+export const store = new Conf({
+  projectSuffix: isTestMode ? "testing" : "",
+});
 
 /**
  * Saves an API token for a user

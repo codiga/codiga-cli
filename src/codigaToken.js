@@ -1,5 +1,6 @@
 import inquirer from "inquirer";
 import { CHECK_USER } from "../graphql/queries";
+import { isTestMode, SAMPLE_TOKEN, TEST_USER } from "../tests/test-utils";
 import { codigaApiFetch } from "../utils/api";
 import { ACTION_TOKEN_ADD } from "../utils/constants";
 import {
@@ -16,7 +17,12 @@ import { setToken, getToken, deleteToken, store } from "../utils/store";
  * @param {string} apiToken the token string to check
  * @returns {Promise<{id: string, accountType: string, username: string}?>} the user if a valid token
  */
-async function getUserInfoFromToken(apiToken) {
+export async function getUserInfoFromToken(apiToken) {
+  // handle test case
+  if (isTestMode && apiToken === SAMPLE_TOKEN) {
+    return TEST_USER;
+  }
+  // complete the real action
   try {
     const resp = await codigaApiFetch(CHECK_USER, null, apiToken);
     if (resp?.user?.id) {
@@ -54,7 +60,7 @@ export async function checkCodigaToken() {
         " ↳ To override it, run one of the following commands:",
         ACTION_TOKEN_ADD
       );
-      process.exit(0);
+      process.exit(1);
     }
   } else {
     printInfo("No token was found.");
@@ -67,6 +73,27 @@ export async function checkCodigaToken() {
 }
 
 /**
+ * Handles the answers given for the token-add command
+ * @param {{apiToken: string}} params
+ */
+export async function handleAnswers({ apiToken }) {
+  const user = await getUserInfoFromToken(apiToken);
+  if (!!user) {
+    setToken(apiToken);
+    printSuccess(
+      `Codiga API token added for ${user.username} (${user.accountType})`
+    );
+    printSuggestion(`Tokens can be found here:`, store.path);
+  } else {
+    printFailure("That token is not valid");
+    printSuggestion(
+      " ↳ Go to Codiga and create a new token:",
+      "https://app.codiga.io/api-tokens"
+    );
+  }
+}
+
+/**
  * Handles asking, verifying, setting and the messaging
  * when the `token-add` command action is run
  */
@@ -75,7 +102,7 @@ export async function addCodigaToken() {
     "Create a Codiga API token:",
     "https://app.codiga.io/api-tokens"
   );
-  inquirer
+  await inquirer
     .prompt([
       {
         type: "input",
@@ -84,26 +111,8 @@ export async function addCodigaToken() {
       },
     ])
     .then(async ({ apiToken }) => {
-      const user = await getUserInfoFromToken(apiToken);
-      if (!!user) {
-        setToken(apiToken);
-        printSuccess(
-          `Codiga API token added for ${user.username} (${user.accountType})`
-        );
-        printSuggestion(`Tokens can be found here:`, store.path);
-        process.exit(0);
-      } else {
-        printFailure("That token is not valid");
-        printSuggestion(
-          " ↳ Go to Codiga and create a new token:",
-          "https://app.codiga.io/api-tokens"
-        );
-        process.exit(1);
-      }
-    })
-    .catch((err) => {
-      printFailure(err.message);
-      process.exit(1);
+      await handleAnswers({ apiToken });
+      process.exit(0);
     });
 }
 

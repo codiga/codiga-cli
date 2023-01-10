@@ -15,7 +15,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules npx jest"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest"
   },
   "keywords": [
     "Codiga",
@@ -33,7 +33,7 @@
     "graphql-request": "^5.1.0",
     "inquirer": "8.2.3",
     "listr2": "^5.0.6",
-    "node-fetch": "^3.3.0",
+    "node-fetch": "^2.6.7",
     "yaml": "1.10.2",
     "yargs": "^17.6.2"
   },
