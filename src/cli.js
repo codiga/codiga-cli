@@ -4,6 +4,7 @@ import {
   ACTION_TOKEN_ADD,
   ACTION_TOKEN_CHECK,
   ACTION_TOKEN_DELETE,
+  ACTION_RULESET_ADD,
   OPTION_LANGUAGE,
   OPTION_LOCAL_SHA,
   OPTION_REMOTE_SHA,
@@ -19,6 +20,7 @@ import {
   checkCodigaToken,
   deleteCodigaToken,
 } from "./codigaToken";
+import { addRuleset } from "./addRuleset";
 
 /**
  * Parses the given command into a readable object to execute
@@ -50,6 +52,7 @@ function parseCommand(args) {
         },
       }
     )
+    .command(ACTION_RULESET_ADD, "Add a ruleset to a `codiga.yml` file")
     .help(true).argv;
 
   // format any actions into a single object with default values
@@ -58,6 +61,7 @@ function parseCommand(args) {
     [ACTION_TOKEN_CHECK]: yargV["_"].includes(ACTION_TOKEN_CHECK) || false,
     [ACTION_TOKEN_DELETE]: yargV["_"].includes(ACTION_TOKEN_DELETE) || false,
     [ACTION_GIT_PUSH_HOOK]: yargV["_"].includes(ACTION_GIT_PUSH_HOOK) || false,
+    [ACTION_RULESET_ADD]: yargV["_"].includes(ACTION_RULESET_ADD) || false,
   };
 
   // how many actions were detected in the command ran
@@ -90,10 +94,13 @@ function parseCommand(args) {
     [OPTION_LANGUAGE]: yargV[OPTION_LANGUAGE] || null,
   };
 
+  const parameters = yargV["_"].slice(1);
+
   // the parsed/formatted result
   return {
     action: selectedAction,
     options,
+    parameters,
   };
 }
 
@@ -105,6 +112,7 @@ export async function cli(args) {
       [OPTION_REMOTE_SHA]: remoteSha,
       [OPTION_LANGUAGE]: language,
     },
+    parameters,
   } = parseCommand(args);
 
   switch (action) {
@@ -116,6 +124,8 @@ export async function cli(args) {
       return await deleteCodigaToken();
     case ACTION_GIT_PUSH_HOOK:
       return await checkPush(remoteSha, localSha);
+    case ACTION_RULESET_ADD:
+      return await addRuleset(parameters);
     default:
       return (() => {
         printEmptyLine();
