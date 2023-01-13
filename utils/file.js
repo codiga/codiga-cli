@@ -2,7 +2,7 @@ import fs from "fs";
 import YAML from "yaml";
 import { extname } from "path";
 import { ROSIE_SUPPORTED_SUFFIX_TO_LANGUAGE } from "./constants";
-import { printFailure } from "./print";
+import { printEmptyLine, printFailure, printSuggestion } from "./print";
 
 /**
  * read a file contents
@@ -29,7 +29,14 @@ export function parseYamlFile(content, path) {
     const parsedFile = YAML.parse(content);
     return parsedFile;
   } catch (err) {
+    printEmptyLine();
     printFailure(`Unable to parse YAML file${path ? `: ${path}` : ""}`);
+    console.log(" ↳ Ensure your file is valid YAML syntax.");
+    printSuggestion(
+      " ↳ You can can use this online parser to check where your errors reside: ",
+      "https://jsonformatter.org/yaml-parser"
+    );
+    printEmptyLine();
     process.exit(1);
   }
 }
