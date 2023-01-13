@@ -33,7 +33,7 @@ export function parseYamlFile(content, path) {
     printFailure(`Unable to parse YAML file${path ? `: ${path}` : ""}`);
     console.log(" ↳ Ensure your file is valid YAML syntax.");
     printSuggestion(
-      " ↳ You can can use this online parser to check where your errors reside: ",
+      " ↳ You can can use this online parser to check where your errors reside:",
       "https://jsonformatter.org/yaml-parser"
     );
     printEmptyLine();
