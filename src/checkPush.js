@@ -90,11 +90,10 @@ export function checkSHAs(remoteShaArg, localShaArg) {
  * @param {string} localSHA
  */
 export async function checkPush(remoteShaArg, localShaArg) {
-  console.log(remoteShaArg, localShaArg);
   if (!remoteShaArg || !localShaArg) {
     printFailure("You need to pass in both remote and local SHA values");
     printSuggestion(
-      "Refer to our documentation for more info:",
+      " ↳ Refer to our documentation for more info:",
       "https://doc.codiga.io/docs/cli/#analysis-and-report-issues-between-two-commits"
     );
     process.exit(1);
