@@ -1,4 +1,5 @@
 import { writeFile } from "fs/promises";
+import { isTestMode } from "../tests/test-utils";
 import {
   ACTION_RULESET_ADD,
   ACTION_TOKEN_ADD,
