@@ -12,6 +12,10 @@
 
   ```bash
   npm link
+
+  # if you have the NPM package installed
+  # you'll need to force this link
+  npm link --force
   ```
 
 - You're all set now, open help to see a list of commands
