@@ -1,7 +1,7 @@
-import { readFile, parseYamlFile } from "../utils/file";
+import { readFileRequired, parseYamlFile } from "../utils/file";
 import { codigaApiFetch } from "./api";
 import { ACTION_TOKEN_ADD, CODIGA_CONFIG_FILE } from "./constants";
-import { getRootDirectory } from "./git";
+import { getGitDirectoryRequired } from "./git";
 import { GET_RULESETS_FOR_CLIENT } from "../graphql/queries";
 import { printCommandSuggestion, printFailure, printSuggestion } from "./print";
 import { getToken } from "./store";
@@ -35,10 +35,10 @@ export async function getRulesetsWithRules(names) {
  * @returns
  */
 export function getRulesetsFromCodigaFile() {
-  const rootDir = getRootDirectory();
+  const rootDir = getGitDirectoryRequired();
 
   const codigaFileLocation = `${rootDir}/${CODIGA_CONFIG_FILE}`;
-  const file = readFile(codigaFileLocation);
+  const file = readFileRequired(codigaFileLocation);
   const parsedFile = parseYamlFile(file, codigaFileLocation);
 
   // if there isn't a rulesets value in the codiga.yml file, throw an error

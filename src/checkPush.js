@@ -1,7 +1,7 @@
 import {
   executeGitCommand,
   findClosestSha,
-  getRootDirectory,
+  getGitDirectoryRequired,
 } from "../utils/git";
 import {
   getRulesetsFromCodigaFile,
@@ -100,7 +100,7 @@ export async function checkPush(remoteShaArg, localShaArg) {
   }
 
   // ensure that there's a git directory to continue
-  getRootDirectory();
+  getGitDirectoryRequired();
 
   // check and verify the SHA args
   const { remoteSha, localSha } = checkSHAs(remoteShaArg, localShaArg);

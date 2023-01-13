@@ -5,16 +5,37 @@ import { ROSIE_SUPPORTED_SUFFIX_TO_LANGUAGE } from "./constants";
 import { printEmptyLine, printFailure, printSuggestion } from "./print";
 
 /**
- * read a file contents
+ * Used to read a file
+ * If the file doesn't exist, we'll return null
  * @param {string} path
  * @returns
  */
 export function readFile(path) {
   try {
+    return fs.readFileSync(path, "utf8");
+  } catch (err) {
+    return null;
+  }
+}
+
+/**
+ * Used to read a file
+ * If the file doesn't exist, we'll exit
+ * @param {string} path
+ * @returns
+ */
+export function readFileRequired(path) {
+  try {
     const file = fs.readFileSync(path, "utf8");
     return file;
   } catch (err) {
+    printEmptyLine();
     printFailure(`Unable to read file: ${path}`);
+    printSuggestion(
+      " ↳ Please try again and contact us, if the issue persists:",
+      "https://app.codiga.io/support"
+    );
+    printEmptyLine();
     process.exit(1);
   }
 }
