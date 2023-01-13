@@ -1,9 +1,14 @@
-import { readFileRequired, parseYamlFile } from "../utils/file";
+import { parseYamlFile, readFile } from "../utils/file";
 import { codigaApiFetch } from "./api";
 import { ACTION_TOKEN_ADD, CODIGA_CONFIG_FILE } from "./constants";
 import { getGitDirectoryRequired } from "./git";
 import { GET_RULESETS_FOR_CLIENT } from "../graphql/queries";
-import { printCommandSuggestion, printFailure, printSuggestion } from "./print";
+import {
+  printCommandSuggestion,
+  printEmptyLine,
+  printFailure,
+  printSuggestion,
+} from "./print";
 import { getToken } from "./store";
 
 /**
@@ -38,8 +43,22 @@ export function getRulesetsFromCodigaFile() {
   const rootDir = getGitDirectoryRequired();
 
   const codigaFileLocation = `${rootDir}/${CODIGA_CONFIG_FILE}`;
-  const file = readFileRequired(codigaFileLocation);
-  const parsedFile = parseYamlFile(file, codigaFileLocation);
+  const codigaFileContent = readFile(codigaFileLocation);
+  if (!codigaFileContent) {
+    printEmptyLine();
+    printFailure(`Unable to read a codiga.yml file`);
+    printSuggestion(
+      " ↳ Please ensure you have a codiga.yml here:",
+      codigaFileLocation
+    );
+    printSuggestion(
+      " ↳ Search for rulesets to add to it here:",
+      "https://app.codiga.io/hub/rulesets"
+    );
+    printEmptyLine();
+    process.exit(1);
+  }
+  const parsedFile = parseYamlFile(codigaFileContent, codigaFileLocation);
 
   // if there isn't a rulesets value in the codiga.yml file, throw an error
   if (!parsedFile) {
