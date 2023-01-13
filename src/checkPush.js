@@ -34,6 +34,18 @@ function getChangedFilePaths(remoteSHA, localSHA) {
     remoteSHA,
     localSHA,
   ]);
+  if (!diff) {
+    printEmptyLine();
+    printFailure(
+      `We were unable to get the difference between ${remoteSHA} and ${localSHA}`
+    );
+    printSuggestion(
+      " ↳ Please review your SHAs above and contact support, if needed:",
+      "https://app.codiga.io/support"
+    );
+    printEmptyLine();
+    process.exit(1);
+  }
   return diff.split("\n").filter((s) => s);
 }
 
