@@ -2,19 +2,40 @@ import fs from "fs";
 import YAML from "yaml";
 import { extname } from "path";
 import { ROSIE_SUPPORTED_SUFFIX_TO_LANGUAGE } from "./constants";
-import { printFailure } from "./print";
+import { printEmptyLine, printFailure, printSuggestion } from "./print";
 
 /**
- * read a file contents
+ * Used to read a file
+ * If the file doesn't exist, we'll return null
  * @param {string} path
  * @returns
  */
 export function readFile(path) {
   try {
+    return fs.readFileSync(path, "utf8");
+  } catch (err) {
+    return null;
+  }
+}
+
+/**
+ * Used to read a file
+ * If the file doesn't exist, we'll exit
+ * @param {string} path
+ * @returns
+ */
+export function readFileRequired(path) {
+  try {
     const file = fs.readFileSync(path, "utf8");
     return file;
   } catch (err) {
+    printEmptyLine();
     printFailure(`Unable to read file: ${path}`);
+    printSuggestion(
+      " ↳ Please try again and contact us, if the issue persists:",
+      "https://app.codiga.io/support"
+    );
+    printEmptyLine();
     process.exit(1);
   }
 }
@@ -29,7 +50,14 @@ export function parseYamlFile(content, path) {
     const parsedFile = YAML.parse(content);
     return parsedFile;
   } catch (err) {
+    printEmptyLine();
     printFailure(`Unable to parse YAML file${path ? `: ${path}` : ""}`);
+    console.log(" ↳ Ensure your file is valid YAML syntax.");
+    printSuggestion(
+      " ↳ You can can use this online parser to check where your errors reside:",
+      "https://jsonformatter.org/yaml-parser"
+    );
+    printEmptyLine();
     process.exit(1);
   }
 }

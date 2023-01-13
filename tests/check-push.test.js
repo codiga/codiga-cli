@@ -4,11 +4,15 @@ import { executeCommand } from "./test-utils";
 describe("codiga git-push-hook", () => {
   test("check for same SHAs", async () => {
     // run the command
-    await executeCommand([ACTION_GIT_PUSH_HOOK, "1234", "1234"]).then(
-      (output) => {
-        expect(output).toMatch(/Remote and local SHA are the same/);
-      }
-    );
+    await executeCommand([
+      ACTION_GIT_PUSH_HOOK,
+      "--remote-sha",
+      "1234",
+      "--local-sha",
+      "1234",
+    ]).then((output) => {
+      expect(output).toMatch(/Remote and local SHA are the same/);
+    });
   });
 
   test("check for closest SHA", async () => {

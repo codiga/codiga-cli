@@ -1,7 +1,7 @@
 import { Listr } from "listr2";
 import { encodeToBase64 } from "../utils/encoding";
 import { rosieApiFetch } from "./api";
-import { getLanguageForFile, readFile } from "./file";
+import { getLanguageForFile, readFileRequired } from "./file";
 import { getRulesForRosiePerLanguage } from "./rules";
 import { printEmptyLine, printFailure, printInfo, printSubItem } from "./print";
 
@@ -62,7 +62,7 @@ export async function analyzeFiles(paths, rules) {
 
     detectedLanguages.forEach((language) => {
       files[language].forEach((file) => {
-        const fileContent = readFile(file);
+        const fileContent = readFileRequired(file);
         const body = {
           filename: file,
           language: language.toLowerCase(),

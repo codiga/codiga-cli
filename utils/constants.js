@@ -6,6 +6,7 @@ export const ACTION_TOKEN_ADD = "token-add";
 export const ACTION_TOKEN_CHECK = "token-check";
 export const ACTION_TOKEN_DELETE = "token-delete";
 export const ACTION_GIT_PUSH_HOOK = "git-push-hook";
+export const ACTION_RULESET_ADD = "ruleset-add";
 
 // COMMAND OPTIONS
 export const OPTION_LANGUAGE = "language";

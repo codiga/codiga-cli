@@ -1,7 +1,7 @@
 import {
   executeGitCommand,
   findClosestSha,
-  getRootDirectory,
+  getGitDirectoryRequired,
 } from "../utils/git";
 import {
   getRulesetsFromCodigaFile,
@@ -34,6 +34,18 @@ function getChangedFilePaths(remoteSHA, localSHA) {
     remoteSHA,
     localSHA,
   ]);
+  if (!diff) {
+    printEmptyLine();
+    printFailure(
+      `We were unable to get the difference between ${remoteSHA} and ${localSHA}`
+    );
+    printSuggestion(
+      " ↳ Please review your SHAs above and contact support, if needed:",
+      "https://app.codiga.io/support"
+    );
+    printEmptyLine();
+    process.exit(1);
+  }
   return diff.split("\n").filter((s) => s);
 }
 
@@ -90,8 +102,17 @@ export function checkSHAs(remoteShaArg, localShaArg) {
  * @param {string} localSHA
  */
 export async function checkPush(remoteShaArg, localShaArg) {
+  if (!remoteShaArg || !localShaArg) {
+    printFailure("You need to pass in both remote and local SHA values");
+    printSuggestion(
+      " ↳ Refer to our documentation for more info:",
+      "https://doc.codiga.io/docs/cli/#analysis-and-report-issues-between-two-commits"
+    );
+    process.exit(1);
+  }
+
   // ensure that there's a git directory to continue
-  getRootDirectory();
+  getGitDirectoryRequired();
 
   // check and verify the SHA args
   const { remoteSha, localSha } = checkSHAs(remoteShaArg, localShaArg);

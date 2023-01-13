@@ -1,5 +1,5 @@
 import child_process from "child_process";
-import { printFailure } from "./print";
+import { printEmptyLine, printFailure, printSuggestion } from "./print";
 import { isTestMode } from "../tests/test-utils";
 
 /**
@@ -20,9 +20,9 @@ export function executeGitCommand(args) {
 
 /**
  * Gets the git directory
- * @returns the directory string or exits if there isn't one
+ * @returns the directory location or null if there isn't one
  */
-export function getRootDirectory() {
+export function getGitDirectory() {
   // if we're in test mode we'll skip this check
   if (isTestMode) return "./tests/fixtures";
 
@@ -31,9 +31,28 @@ export function getRootDirectory() {
   if (rootDirectory) {
     return rootDirectory.split("\n").join("");
   } else {
+    return null;
+  }
+}
+
+/**
+ * Gets the git directory
+ * @returns the directory location or exits if there isn't one
+ */
+export function getGitDirectoryRequired() {
+  // if we're in test mode we'll skip this check
+  if (isTestMode) return "./tests/fixtures";
+
+  // now look for a git repository
+  const rootDirectory = executeGitCommand(["rev-parse", "--show-toplevel"]);
+  if (rootDirectory) {
+    return rootDirectory.split("\n").join("");
+  } else {
+    printEmptyLine();
     printFailure(
       "Unable to execute a git command because you're not in a git repository"
     );
+    printEmptyLine();
     process.exit(1);
   }
 }
@@ -98,8 +117,9 @@ export function findClosestSha() {
 
   if (output) {
     closestSha = output.replace(/\n/g, "").trim();
-    console.debug(
-      `Closest SHA found between ${currentBranch} and ${mainBranch}: ${closestSha}`
+    printSuggestion(
+      `Closest SHA found between ${currentBranch} and ${mainBranch}`,
+      closestSha
     );
   }
 
