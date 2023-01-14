@@ -1,6 +1,7 @@
 DEVELOPMENT.md
 tests/*
 !tests/test-utils.js
+!tests/fixtures/rulesetMock.js
 coverage
 babel.config.js
 jest.config.js
