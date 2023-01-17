@@ -1,7 +1,3 @@
-export function getRulesetsWithRulesMock(rulesets) {
-  return mockedRulesets.filter((ruleset) => rulesets.includes(ruleset.name));
-}
-
 export const mockedRulesets = [
   {
     id: 1,
@@ -39,3 +35,25 @@ export const mockedRulesets = [
     rules: [],
   },
 ];
+
+export function getRulesetsWithRulesMock(rulesets) {
+  return mockedRulesets.filter((ruleset) => rulesets.includes(ruleset.name));
+}
+
+export function getRulesetsByNamesMock(rulesetNames) {
+  return rulesetNames.reduce(
+    (acc, rulesetName) => {
+      const isFound = mockedRulesets.find(({ name }) => name === rulesetName);
+      if (isFound) {
+        acc.found.push(rulesetName);
+      } else {
+        acc.notFound.push(rulesetName);
+      }
+      return acc;
+    },
+    {
+      found: [],
+      notFound: [],
+    }
+  );
+}
