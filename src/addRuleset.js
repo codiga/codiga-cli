@@ -172,12 +172,12 @@ export async function addRuleset(rulesetNamesParams) {
     printEmptyLine();
   } else {
     // creating a new codiga.yml with the ruleset here
-    await createCodigaYml(codigaFileLocation, newRulesets);
+    await createCodigaYml(codigaFileLocation, validRulesets);
     printEmptyLine();
     printSuggestion(
       `No codiga.yml file found, so we created one and added ${
-        newRulesets.length
-      } ruleset${newRulesets.length === 1 ? "" : "s"} to it:`,
+        validRulesets.length
+      } ruleset${validRulesets.length === 1 ? "" : "s"} to it:`,
       codigaFileLocation
     );
     printSuggestion(

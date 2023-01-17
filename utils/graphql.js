@@ -29,7 +29,9 @@ function getQueries(names) {
  * @returns {{query: string, aliasMap: {string: string}}}
  */
 export function buildRulesetsQuery(names) {
-  const query = gql`query getRulesets {${getQueries(names)}}`;
+  const uniqueNames = [...new Set(names)];
+
+  const query = gql`query getRulesets {${getQueries(uniqueNames)}}`;
 
   const aliasMap = names.reduce(
     (acc, cur) => ({ ...acc, [getQueryAlias(cur)]: cur }),
