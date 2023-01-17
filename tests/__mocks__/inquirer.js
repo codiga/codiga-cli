@@ -42,7 +42,7 @@ exports.prompt = (prompts) => {
       a.choices.forEach((c, i) => {
         const expected = a.choices[i];
         if (expected) {
-          expect(prompt.choices[i].name).toContain(expected);
+          expect(prompt.choices[i]).toEqual(expected);
         }
       });
     }
@@ -54,12 +54,20 @@ exports.prompt = (prompts) => {
 
     if (a.choose != null) {
       expect(prompt.type).toBe("list");
-      setValue(prompt.choices[a.choose].value);
+      setValue(
+        prompt.choices.find((choice) => choice.value === a.choose)?.value
+      );
     }
 
     if (a.check != null) {
       expect(prompt.type).toBe("checkbox");
-      setValue(a.check.map((i) => prompt.choices[i].value));
+      setValue(
+        a.check
+          .map((check) => {
+            return prompt.choices.find((choice) => choice.name === check)?.name;
+          })
+          .filter((c) => c)
+      );
     }
 
     if (a.confirm != null) {

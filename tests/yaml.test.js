@@ -1,5 +1,5 @@
 import { parseYamlFile } from "../utils/file";
-import { convertRulesetsToString } from "../utils/ruleset";
+import { convertRulesetsToString } from "../utils/rulesets";
 import {
   CODIGA_CONFIG_MISSING_RULESETS,
   CODIGA_CONFIG_MISSING_RULESETS_LIST,
