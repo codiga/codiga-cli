@@ -52,7 +52,7 @@ function parseCommand(args) {
         },
       }
     )
-    .command(ACTION_RULESET_ADD, "Add a ruleset to a `codiga.yml` file")
+    .command(ACTION_RULESET_ADD, "Add rulesets to a `codiga.yml` file")
     .help(true).argv;
 
   // format any actions into a single object with default values

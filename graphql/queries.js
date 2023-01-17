@@ -27,12 +27,3 @@ export const GET_RULESETS_FOR_CLIENT = gql`
     }
   }
 `;
-
-export const GET_RULESET = gql`
-  query getRuleset($name: String!) {
-    ruleSet(name: $name) {
-      id
-      name
-    }
-  }
-`;

@@ -12,9 +12,11 @@ import {
   printEmptyLine,
   printFailure,
   printInfo,
+  printSubItem,
   printSuggestion,
 } from "../utils/print";
-import { convertRulesetsToString, getRuleset } from "../utils/ruleset";
+import { convertRulesetsToString } from "../utils/rulesets";
+import { getRulesetsByNames, getUserPromptedRulesets } from "../utils/rulesets";
 
 /**
  * Creates a codiga.yml file's content with the rulesets given
@@ -44,38 +46,64 @@ export async function createCodigaYml(codigaFileLocation, rulesets) {
  * Handles adding a ruleset to a codiga.yml file
  * @param {string[]} rulesetNames
  */
-export async function addRuleset(rulesetNames) {
-  // TODO - change to a prompt when no rulesets are given
-  const rulesetName = rulesetNames[0];
-  if (!rulesetName) {
-    printEmptyLine();
-    printFailure("You need to specify a ruleset to add");
-    printSuggestion(
-      " ↳ You can search for rulesets here:",
-      "https://app.codiga.io/hub/rulesets"
-    );
-    printCommandSuggestion(
-      " ↳ Then follow this command structure:",
-      `${ACTION_RULESET_ADD} <ruleset-name>`
-    );
-    printEmptyLine();
-    process.exit(1);
+export async function addRuleset(rulesetNamesParams) {
+  let rulesetNames = rulesetNamesParams;
+
+  /**
+   * if `codiga ruleset-add` was called with no rulesets, we'll
+   * open an interactive menu for them to select suggested rulesets
+   */
+  if (rulesetNamesParams.length === 0) {
+    // prompt the user to choose some rulesets
+    rulesetNames = await getUserPromptedRulesets();
+    // if the user didn't choose any notify them and exit
+    if (rulesetNames.length === 0) {
+      printEmptyLine();
+      printInfo("No rulesets were chosen.");
+      printCommandSuggestion(
+        " ↳ Run the command again to get started:",
+        ACTION_RULESET_ADD
+      );
+      printSuggestion(
+        " ↳ Find all publically available rulesets here:",
+        "https://app.codiga.io/hub/rulesets"
+      );
+      printEmptyLine();
+      process.exit(1);
+    }
   }
 
-  // Check if the ruleset exists before continuing onwards
-  const ruleset = await getRuleset({ name: rulesetName });
-  if (!ruleset) {
+  /**
+   * Here we take the ruleset names that were chosen through the interactive
+   * mode or were received from the command parameters, and validate which
+   * ones are valid and should be added to a `codiga.yml` file and which
+   * we should inform the user won't be added
+   */
+
+  const { found: validRulesets, notFound } = await getRulesetsByNames(
+    rulesetNames
+  );
+
+  if (notFound.length > 0) {
     printEmptyLine();
     printFailure(
-      "That ruleset either doesn't exist or you lack the permissions to access it"
+      "The following rulesets either don't exist or you lack the permissions to access it:"
     );
+    notFound.forEach((notFoundRuleset) => {
+      printSubItem(`- ${notFoundRuleset}`);
+    });
+    printCommandSuggestion(
+      "Ensure you have a Codiga API token set with one of the following commands:",
+      ACTION_TOKEN_ADD
+    );
+  }
+
+  if (validRulesets.length === 0) {
+    printEmptyLine();
+    printInfo("No valid rulesets were found to continue");
     printCommandSuggestion(
       " ↳ Ensure you have a Codiga API token set with one of the following commands:",
       ACTION_TOKEN_ADD
-    );
-    printSuggestion(
-      " ↳ You can find more rulesets here:",
-      "https://app.codiga.io/hub/rulesets"
     );
     printEmptyLine();
     process.exit(1);
@@ -92,46 +120,71 @@ export async function addRuleset(rulesetNames) {
   const codigaFileContent = readFile(codigaFileLocation);
 
   /**
-   * If we found a `codiga.yml` file, add the rule to it
-   * If we don't find a `codiga.yml` file, create the file and add the rule to it
+   * If we found a `codiga.yml` file, add the new rulesets to it
+   * If we don't find a `codiga.yml` file, create the file and add the rulesets to it
    */
   if (codigaFileContent) {
     const parsedFile = parseYamlFile(codigaFileContent, codigaFileLocation);
     const codigaRulesets = parsedFile.rulesets;
-    if (codigaRulesets.includes(rulesetName)) {
+
+    // check which rulesets are new and which are already used in the `codiga.yml` file
+    const { usedRulesets, newRulesets } = validRulesets.reduce(
+      (acc, ruleset) => {
+        if (codigaRulesets.includes(ruleset)) {
+          acc.usedRulesets.push(ruleset);
+        } else {
+          acc.newRulesets.push(ruleset);
+        }
+        return acc;
+      },
+      {
+        usedRulesets: [],
+        newRulesets: [],
+      }
+    );
+
+    if (usedRulesets.length > 0) {
       printEmptyLine();
       printInfo(
-        `The ruleset (${rulesetName}) already exists in your \`codiga.yml\``
+        `The following rulesets already exists in your \`codiga.yml\` file:`
       );
-      printSuggestion;
-      printEmptyLine();
-      process.exit(1);
-    } else {
-      // adding the new ruleset to the file
-      await createCodigaYml(codigaFileLocation, [
-        ...codigaRulesets,
-        rulesetName,
-      ]);
-      printSuggestion(
-        `We added ${rulesetName} to your codiga.yml file:`,
-        codigaFileLocation
-      );
-      printSuggestion(
-        " ↳ Find more rulesets to add here:",
-        "https://app.codiga.io/hub/rulesets"
-      );
+      usedRulesets.forEach((ruleset) => {
+        printSubItem(`- ${ruleset}`);
+      });
     }
-  } else {
-    // creating a new codiga.yml with the ruleset here
-    await createCodigaYml(codigaFileLocation, [rulesetName]);
+
+    // adding the new ruleset to the file
+    await createCodigaYml(codigaFileLocation, [
+      ...codigaRulesets,
+      ...newRulesets,
+    ]);
+    printEmptyLine();
     printSuggestion(
-      `No codiga.yml file found, so we created one and added ${rulesetName} to it:`,
+      `We added ${newRulesets.length} ruleset${
+        newRulesets.length === 1 ? "" : "s"
+      } to your codiga.yml file:`,
       codigaFileLocation
     );
     printSuggestion(
       " ↳ Find more rulesets to add here:",
       "https://app.codiga.io/hub/rulesets"
     );
+    printEmptyLine();
+  } else {
+    // creating a new codiga.yml with the ruleset here
+    await createCodigaYml(codigaFileLocation, validRulesets);
+    printEmptyLine();
+    printSuggestion(
+      `No codiga.yml file found, so we created one and added ${
+        validRulesets.length
+      } ruleset${validRulesets.length === 1 ? "" : "s"} to it:`,
+      codigaFileLocation
+    );
+    printSuggestion(
+      " ↳ Find more rulesets to add here:",
+      "https://app.codiga.io/hub/rulesets"
+    );
+    printEmptyLine();
   }
 
   process.exit(0);

@@ -1,6 +1,12 @@
+import inquirer from "inquirer";
 import { parseYamlFile, readFile } from "../utils/file";
 import { codigaApiFetch } from "./api";
-import { ACTION_TOKEN_ADD, CODIGA_CONFIG_FILE } from "./constants";
+import {
+  ACTION_TOKEN_ADD,
+  CATEGORY_CHOICES,
+  CODIGA_CONFIG_FILE,
+  RULESET_CHOICES,
+} from "./constants";
 import { getGitDirectoryRequired } from "./git";
 import { GET_RULESETS_FOR_CLIENT } from "../graphql/queries";
 import {
@@ -10,6 +16,9 @@ import {
   printSuggestion,
 } from "./print";
 import { getToken } from "./store";
+import { buildRulesetsQuery } from "./graphql";
+import { isTestMode } from "../tests/test-utils";
+import { getRulesetsByNamesMock } from "../tests/fixtures/rulesetsMock";
 
 /**
  * Gets an array of rulesets and their rules
@@ -104,4 +113,76 @@ function cleanParsedCodigaFile(parsedContent) {
     .filter((ruleset) => ruleset)
     .map((ruleset) => ruleset.split(" ")[0]);
   return rulesets;
+}
+
+/**
+ * When given an array of ruleset names, this will fetch to
+ * ensure they exist and returns these in a found/notFound array
+ * If an error occurs while fetching this will exit with a 1
+ * @param {string[]} names
+ * @returns {Promise<{found: string[], notFound: string[]}>}
+ */
+export async function getRulesetsByNames(names) {
+  if (isTestMode) return getRulesetsByNamesMock(names);
+  try {
+    const { query, aliasMap } = buildRulesetsQuery(names);
+    const resp = await codigaApiFetch(query);
+
+    const { found, notFound } = Object.entries(resp).reduce(
+      (acc, [alias, ruleset]) => {
+        if (ruleset === null) {
+          acc.notFound.push(aliasMap[alias]);
+        } else {
+          acc.found.push(aliasMap[alias]);
+        }
+        return acc;
+      },
+      {
+        found: [],
+        notFound: [],
+      }
+    );
+
+    return { found, notFound };
+  } catch (err) {
+    printFailure("We were unable to fetch those rulesets");
+    printSuggestion(
+      " ↳ If the issue persists, contact us at:",
+      "https://app.codiga.io/support"
+    );
+    process.exit(1);
+  }
+}
+
+/**
+ * Prompts the user through interactive menus to get rulesets
+ * @returns {Promise<string[]>}
+ */
+export async function getUserPromptedRulesets() {
+  const { category } = await inquirer.prompt({
+    type: "list",
+    name: "category",
+    pageSize: CATEGORY_CHOICES.length,
+    message: "Please select one category:",
+    choices: CATEGORY_CHOICES,
+  });
+
+  const { rulesets } = await inquirer.prompt({
+    type: "checkbox",
+    name: "rulesets",
+    message: "Please select all the rulesets you'd like to add",
+    choices: RULESET_CHOICES[category].map((ruleset) => ({
+      type: "checkbox",
+      name: ruleset,
+    })),
+  });
+
+  return rulesets;
+}
+
+export function convertRulesetsToString(rulesets) {
+  return `rulesets:\n${rulesets
+    .filter((x) => x)
+    .map((ruleset) => `  - ${ruleset}\n`)
+    .join("")}`;
 }
