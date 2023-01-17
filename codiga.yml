@@ -1,0 +1,3 @@
+rulesets:
+  - playwright
+  - testing-library
