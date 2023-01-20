@@ -54,6 +54,22 @@ Use the command below to delete a Codiga API token _from your system_. You can [
 codiga token-delete
 ```
 
+### Create or add rulesets to a `codiga.yml`
+
+To create a `codiga.yml` file with rulesets or to quickly add new rulesets to a `codiga.yml` file, we offer a single command.
+
+If you run the command below, we'll open an interactive menu where we can suggest languages and rulesets, and you can choose which ones to use.
+
+```bash
+codiga ruleset-add
+```
+
+If you know what rulesets you want to add, you can pass their names into the command like you see below.
+
+```bash
+codiga ruleset-add my-public-ruleset my-private-ruleset
+```
+
 ### Analysis and report issues between two commits
 
 Use the command below to detect any violations between your two commits.
