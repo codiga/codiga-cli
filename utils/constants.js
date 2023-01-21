@@ -93,7 +93,6 @@ export const CATEGORY_CHOICES = [
 
 export const RULESET_CHOICES = {
   [CATEGORY_PYTHON_GENERAL_VALUE]: [
-    "for-testing", // for testing
     "python-security", // https://app.codiga.io/hub/ruleset/python-security
     "python-best-practices", // https://app.codiga.io/hub/ruleset/python-best-practices
     "python-code-style", // https://app.codiga.io/hub/ruleset/python-code-style
