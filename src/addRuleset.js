@@ -187,5 +187,17 @@ export async function addRuleset(rulesetNamesParams) {
     printEmptyLine();
   }
 
+  printInfo("Check Codiga Rules in:");
+  console.log(" - IDE:");
+  printSuggestion("  - VS Code:", "codiga.io/get-codiga/vscode");
+  printSuggestion("  - JetBrains:", "codiga.io/get-codiga/jetbrains");
+  printSuggestion("  - Visual Studio:", "codiga.io/get-codiga/visualstudio");
+  printSuggestion(
+    " - Git pre-hook:",
+    "doc.codiga.io/docs/code-analysis/integration/git-hooks"
+  );
+  printSuggestion(" - Git Push/Pull Request:", "app.codiga.io");
+  printEmptyLine();
+
   process.exit(0);
 }
