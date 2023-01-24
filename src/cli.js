@@ -5,7 +5,6 @@ import {
   ACTION_TOKEN_CHECK,
   ACTION_TOKEN_DELETE,
   ACTION_RULESET_ADD,
-  OPTION_LANGUAGE,
   OPTION_LOCAL_SHA,
   OPTION_REMOTE_SHA,
 } from "../utils/constants";
@@ -91,7 +90,6 @@ function parseCommand(args) {
   const options = {
     [OPTION_LOCAL_SHA]: yargV[OPTION_LOCAL_SHA] || null,
     [OPTION_REMOTE_SHA]: yargV[OPTION_REMOTE_SHA] || null,
-    [OPTION_LANGUAGE]: yargV[OPTION_LANGUAGE] || null,
   };
 
   const parameters = yargV["_"].slice(1);
@@ -107,11 +105,7 @@ function parseCommand(args) {
 export async function cli(args) {
   const {
     action,
-    options: {
-      [OPTION_LOCAL_SHA]: localSha,
-      [OPTION_REMOTE_SHA]: remoteSha,
-      [OPTION_LANGUAGE]: language,
-    },
+    options: { [OPTION_LOCAL_SHA]: localSha, [OPTION_REMOTE_SHA]: remoteSha },
     parameters,
   } = parseCommand(args);
 

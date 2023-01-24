@@ -9,7 +9,6 @@ export const ACTION_GIT_PUSH_HOOK = "git-push-hook";
 export const ACTION_RULESET_ADD = "ruleset-add";
 
 // COMMAND OPTIONS
-export const OPTION_LANGUAGE = "language";
 export const OPTION_REMOTE_SHA = "remote-sha";
 export const OPTION_LOCAL_SHA = "local-sha";
 
