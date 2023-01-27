@@ -25,6 +25,16 @@ export async function formatAndOutputAnalysis({
   format,
   analysisTime,
 }) {
+  const content = await formatAnalysis(violations, format);
+  await outputAnalysis(output, content, violations.length, analysisTime);
+}
+
+/**
+ * Format the violations accordingly
+ * @param {string} violations
+ * @param {number} format
+ */
+export async function formatAnalysis(violations, format) {
   const formattedViolations = violations.map((violation) => ({
     filename: `${violation.filename}:${violation.start.line}:${violation.start.col}`,
     message: violation.message,
@@ -55,7 +65,7 @@ export async function formatAndOutputAnalysis({
     }, "Filename - Message (Severity/Category)\n");
   }
 
-  await outputAnalysis(output, content, violations.length, analysisTime);
+  return content;
 }
 
 /**
