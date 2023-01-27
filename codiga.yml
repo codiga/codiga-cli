@@ -2,3 +2,4 @@ rulesets:
   - jestjs
   - javascript-client-security
   - javascript-inclusive
+  - javascript-best-practices
