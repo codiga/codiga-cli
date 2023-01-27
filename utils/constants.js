@@ -22,6 +22,11 @@ export const API_TOKEN_HEADER = "X-Api-Token";
 export const USER_AGENT_HEADER = "User-Agent";
 export const USER_AGENT_CLI = `Cli/${version}`;
 
+// OTHERS
+export const IGNORED_FILES_LISTED_COUNT = 5;
+export const CONCURRENT_ROSIE_REQUESTS_COUNT = 4;
+export const UPDATE_ANALYSIS_HEADER_IN_MS = 250;
+
 // `ruleset-add` PROMPTS
 // PYTHON
 export const CATEGORY_PYTHON_GENERAL_NAME = "Python (general)";

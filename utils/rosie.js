@@ -1,9 +1,17 @@
+import pLimit from "p-limit";
 import { Listr } from "listr2";
 import { encodeToBase64 } from "../utils/encoding";
 import { rosieApiFetch } from "./api";
 import { getLanguageForFile, readFileRequired } from "./file";
 import { getRulesForRosiePerLanguage } from "./rules";
 import { printEmptyLine, printFailure, printInfo, printSubItem } from "./print";
+import {
+  CONCURRENT_ROSIE_REQUESTS_COUNT,
+  IGNORED_FILES_LISTED_COUNT,
+  UPDATE_ANALYSIS_HEADER_IN_MS,
+} from "./constants";
+
+const limit = pLimit(CONCURRENT_ROSIE_REQUESTS_COUNT);
 
 /**
  * Used to filter out unsupported language files and
@@ -44,13 +52,21 @@ export async function analyzeFiles(paths, rules) {
 
     printEmptyLine();
     // if there's are unsupported files we'll log that with a notice
-    if (files.notSupported.length !== 0) {
+    const numOfUnsupportedFiles = files.notSupported.length;
+    if (numOfUnsupportedFiles !== 0) {
       printInfo(
-        "Codiga will skip analyzing the following files as their language is not supported yet"
+        `Codiga will skip analyzing ${numOfUnsupportedFiles} files as the language is not supported yet:`
       );
-      files.notSupported.forEach((file) => {
-        printSubItem(`- ${file}`.trim());
-      });
+      files.notSupported
+        .slice(0, IGNORED_FILES_LISTED_COUNT)
+        .forEach((file) => {
+          printSubItem(`- ${file}`.trim());
+        });
+      if (numOfUnsupportedFiles - IGNORED_FILES_LISTED_COUNT > 0) {
+        printSubItem(
+          `  + ${numOfUnsupportedFiles - IGNORED_FILES_LISTED_COUNT} more files`
+        );
+      }
       printEmptyLine();
     }
 
@@ -78,16 +94,24 @@ export async function analyzeFiles(paths, rules) {
     let violations = [];
     let errors = [];
 
+    const getTitle = (totalFiles, pendingCount) =>
+      `Analyzing ${totalFiles} file${
+        totalFiles === 1 ? "" : "s"
+      } for violations (${totalFiles - pendingCount}/${totalFiles})`;
+
     const tasks = new Listr([
       {
-        title: `Analyzing ${filesAndRules.length} file${
-          filesAndRules.length === 1 ? "" : "s"
-        } for violations`,
-        task: async () => {
-          // create an array of Rosie API promises
-          const promises = filesAndRules.map(
-            async (body) => await rosieApiFetch(body)
+        title: getTitle(filesAndRules.length, 0),
+        task: async (_, task) => {
+          // create an array of Rosie API wrapped concurrent promises
+          const promises = filesAndRules.map((body) =>
+            limit(() => rosieApiFetch(body))
           );
+
+          // on an interval we'll
+          const intervalId = setInterval(() => {
+            task.title = getTitle(filesAndRules.length, limit.pendingCount);
+          }, UPDATE_ANALYSIS_HEADER_IN_MS);
 
           /**
            * Waiting for all our analysis promises to settle here. We
@@ -96,6 +120,8 @@ export async function analyzeFiles(paths, rules) {
            */
           await Promise.allSettled(promises)
             .then((results) => {
+              task.title = getTitle(filesAndRules.length, limit.pendingCount);
+              clearInterval(intervalId);
               results.forEach((result, fileIndex) => {
                 /**
                  * if the promise is unsuccessful, we'll add the
@@ -123,6 +149,8 @@ export async function analyzeFiles(paths, rules) {
               });
             })
             .catch((err) => {
+              task.title = getTitle(filesAndRules.length, limit.pendingCount);
+              clearInterval(intervalId);
               printFailure(err.message);
               process.exit(1);
             });
