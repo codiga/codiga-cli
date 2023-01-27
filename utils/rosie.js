@@ -1,5 +1,6 @@
 import pLimit from "p-limit";
 import { Listr } from "listr2";
+import path from "path";
 import { encodeToBase64 } from "../utils/encoding";
 import { rosieApiFetch } from "./api";
 import { getLanguageForFile, readFileRequired } from "./file";
@@ -45,7 +46,7 @@ export function managePathsBySupportAndLanguage(paths) {
  * @param {string[]} paths
  * @param {RosieRule} rules
  */
-export async function analyzeFiles(paths, rules) {
+export async function analyzeFiles(paths, rules, rootDir) {
   try {
     // we won't analyze files for languages that aren't supported
     const files = managePathsBySupportAndLanguage(paths);
@@ -78,7 +79,7 @@ export async function analyzeFiles(paths, rules) {
 
     detectedLanguages.forEach((language) => {
       files[language].forEach((file) => {
-        const fileContent = readFileRequired(file);
+        const fileContent = readFileRequired(path.resolve(rootDir, file));
         const body = {
           filename: file,
           language: language.toLowerCase(),

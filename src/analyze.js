@@ -1,3 +1,4 @@
+import path from "path";
 import { ACTION_TOKEN_ADD } from "../utils/constants";
 import { getAllDirectoryFiles, getIsDirectory } from "../utils/directory";
 import { formatAndOutputAnalysis } from "../utils/output";
@@ -19,15 +20,22 @@ import {
 } from "../utils/rulesets";
 
 export async function analyze(
-  fileOrDir,
+  givenFileOrDir,
   { output, followSymlinks, format, rulesets: givenRulesets }
 ) {
-  const path = fileOrDir[0] || "./";
-  const isDirectory = await getIsDirectory(path);
+  // get the given path or set the default to the current location
+  const fileOrDir = givenFileOrDir[0] || "./";
+
+  const isDirectory = await getIsDirectory(fileOrDir);
   if (isDirectory === null) {
-    printFailure(`No such file or directory to analyze: ${path}`);
+    printFailure(`No such file or directory to analyze: ${fileOrDir}`);
     process.exit(1);
   }
+
+  const isAbsolute = path.isAbsolute(fileOrDir);
+  const rootPath = isAbsolute
+    ? fileOrDir
+    : path.resolve(process.cwd(), fileOrDir);
 
   /**
    * If rulesets are given in the command, we only use those on an analysis
@@ -39,10 +47,10 @@ export async function analyze(
     rulesetNames = givenRulesets;
   } else {
     if (isDirectory) {
-      rulesetNames = await getRulesetsFromCodigaFile(path);
+      rulesetNames = await getRulesetsFromCodigaFile(rootPath);
     } else {
       printEmptyLine();
-      printFailure(`No rulesets were given to analyze this file: ${path}`);
+      printFailure(`No rulesets were given to analyze this file: ${rootPath}`);
       printSuggestion(
         " ↳ When you specify a file to analyze, you must add rulesets in your command manually like this:",
         "codiga analyze file.txt --ruleset fake-ruleset"
@@ -94,11 +102,15 @@ export async function analyze(
   const rules = convertRulesetsToRules(rulesetsWithRules);
 
   const filesToAnalyze = isDirectory
-    ? await getAllDirectoryFiles(path, followSymlinks)
-    : [path];
+    ? await getAllDirectoryFiles(rootPath, followSymlinks)
+    : [rootPath];
 
   // we analyze all the changed files and get back a list of violations and (network) errors
-  const { violations, errors } = await analyzeFiles(filesToAnalyze, rules);
+  const { violations, errors } = await analyzeFiles(
+    filesToAnalyze,
+    rules,
+    rootPath
+  );
 
   if (errors.length > 0) {
     printEmptyLine();

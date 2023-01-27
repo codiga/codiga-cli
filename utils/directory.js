@@ -1,5 +1,4 @@
 import { promises as Fs } from "fs";
-import path from "path";
 import { globby } from "globby";
 
 /**
@@ -18,13 +17,14 @@ export async function getIsDirectory(path) {
 
 /**
  * Get all the files in a directory, if it exists
- * @param {string} dir
+ * @param {string} rootDir
  * @param {boolean | null} followSymlinks
  * @returns {Promise<string[] | null>} returns null if the directory doesn't exist
  */
-export async function getAllDirectoryFiles(dir, followSymlinks) {
+export async function getAllDirectoryFiles(rootDir, followSymlinks) {
   try {
-    const files = await globby(path.resolve(dir), {
+    const files = await globby("", {
+      cwd: rootDir || process.cwd(),
       gitignore: true,
       followSymbolicLinks: !!followSymlinks,
       absolute: false,

@@ -112,7 +112,7 @@ export async function checkPush(remoteShaArg, localShaArg) {
   }
 
   // ensure that there's a git directory to continue
-  getGitDirectoryRequired();
+  const rootDir = getGitDirectoryRequired();
 
   // check and verify the SHA args
   const { remoteSha, localSha } = checkSHAs(remoteShaArg, localShaArg);
@@ -130,7 +130,11 @@ export async function checkPush(remoteShaArg, localShaArg) {
   const changedFilePaths = getChangedFilePaths(remoteSha, localSha);
 
   // we analyze all the changed files and get back a list of violations and (network) errors
-  const { violations, errors } = await analyzeFiles(changedFilePaths, rules);
+  const { violations, errors } = await analyzeFiles(
+    changedFilePaths,
+    rules,
+    rootDir
+  );
 
   // print out our violations
   if (violations.length === 0) {
