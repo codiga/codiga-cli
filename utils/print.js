@@ -1,5 +1,43 @@
 import chalk from "chalk";
 
+export function setPrintToStdOut() {
+  global.console = {
+    temp: console.log,
+    log: console.temp,
+    error: console.error,
+  };
+}
+
+export function setPrintToStdErr() {
+  global.console = {
+    temp: console.temp,
+    log: console.error,
+    error: console.error,
+  };
+}
+
+// export const err = {
+//   printEmptyLine: (...args) => printEmptyLine(...args, "error"),
+//   printFailure: (...args) => printFailure(...args, "error"),
+//   printSuccess: (...args) => printSuccess(...args, "error"),
+//   printInfo: (...args) => printInfo(...args, "error"),
+//   printSuggestion: (...args) => printSuggestion(...args, "error"),
+//   printCommandSuggestion: (...args) => printCommandSuggestion(...args, "error"),
+//   printViolation: (...args) => printViolation(...args, "error"),
+//   printSubItem: (...args) => printSubItem(...args, "error"),
+// };
+
+// export const out = {
+//   printEmptyLine: (...args) => printEmptyLine(...args, "log"),
+//   printFailure: (...args) => printFailure(...args, "log"),
+//   printSuccess: (...args) => printSuccess(...args, "log"),
+//   printInfo: (...args) => printInfo(...args, "log"),
+//   printSuggestion: (...args) => printSuggestion(...args, "log"),
+//   printCommandSuggestion: (...args) => printCommandSuggestion(...args, "log"),
+//   printViolation: (...args) => printViolation(...args, "log"),
+//   printSubItem: (...args) => printSubItem(...args, "log"),
+// };
+
 /**
  * Used to space sections of output to improve readability
  */

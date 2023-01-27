@@ -7,11 +7,26 @@ export const ACTION_TOKEN_CHECK = "token-check";
 export const ACTION_TOKEN_DELETE = "token-delete";
 export const ACTION_GIT_PUSH_HOOK = "git-push-hook";
 export const ACTION_RULESET_ADD = "ruleset-add";
+export const ACTION_ANALYZE = "analyze";
 
 // COMMAND OPTIONS
-export const OPTION_LANGUAGE = "language";
 export const OPTION_REMOTE_SHA = "remote-sha";
 export const OPTION_LOCAL_SHA = "local-sha";
+export const OPTION_OUT = "out";
+export const OPTION_FOLLOW_SYMLINKS = "follow-symlinks";
+export const OPTION_FORMAT = "format";
+export const OPTION_RULESET = "ruleset";
+
+// COMMAND OPTION ALIASES
+export const OPTION_OUT_ALIAS = "o";
+export const OPTION_FORMAT_ALIAS = "f";
+export const OPTION_RULESET_ALIAS = "r";
+
+// COMMAND OPTION HELPERS
+export const OPTION_OUT_DEFAULT = "stdout";
+export const OPTION_FORMAT_TEXT = "text";
+export const OPTION_FORMAT_JSON = "json";
+export const OPTION_FORMAT_CSV = "csv";
 
 // URLs
 export const GRAPHQL_STAGING_URL = "https://api-staging.codiga.io/graphql";
@@ -22,6 +37,11 @@ export const ROSIE_URL = "https://analysis.codiga.io/analyze";
 export const API_TOKEN_HEADER = "X-Api-Token";
 export const USER_AGENT_HEADER = "User-Agent";
 export const USER_AGENT_CLI = `Cli/${version}`;
+
+// OTHERS
+export const IGNORED_FILES_LISTED_COUNT = 5;
+export const CONCURRENT_ROSIE_REQUESTS_COUNT = 4;
+export const UPDATE_ANALYSIS_HEADER_IN_MS = 250;
 
 // `ruleset-add` PROMPTS
 // PYTHON
@@ -176,6 +196,8 @@ export const ELEMENT_CHECKED_INTERFACE = "Interface";
 export const ELEMENT_CHECKED_HTML_ELEMENT = "HtmlElement";
 export const ELEMENT_CHECKED_CLASS_DEFINITION = "ClassDefinition";
 export const ELEMENT_CHECKED_FUNCTION_EXPRESSION = "FunctionExpression";
+export const ELEMENT_CHECKED_VARIABLE_DECLARATION = "VariableDeclaration";
+export const ELEMENT_CHECKED_ANY = "Any";
 
 export const ROSIE_ENTITY_CHECKED_FUNCTION_CALL = "functioncall";
 export const ROSIE_ENTITY_CHECKED_IF_CONDITION = "ifcondition";
@@ -189,6 +211,8 @@ export const ROSIE_ENTITY_INTERFACE = "interface";
 export const ROSIE_ENTITY_HTML_ELEMENT = "htmlelement";
 export const ROSIE_ENTITY_CLASS_DEFINITION = "classdefinition";
 export const ROSIE_ENTITY_FUNCTION_EXPRESSION = "functionexpression";
+export const ROSIE_ENTITY_VARIABLE_DECLARATION = "variabledeclaration";
+export const ROSIE_ENTITY_ANY = "any";
 
 export const ELEMENT_CHECKED_TO_ENTITY_CHECKED = new Map([
   [ELEMENT_CHECKED_FUNCTION_CALL, ROSIE_ENTITY_CHECKED_FUNCTION_CALL],
@@ -203,4 +227,6 @@ export const ELEMENT_CHECKED_TO_ENTITY_CHECKED = new Map([
   [ELEMENT_CHECKED_HTML_ELEMENT, ROSIE_ENTITY_HTML_ELEMENT],
   [ELEMENT_CHECKED_CLASS_DEFINITION, ROSIE_ENTITY_CLASS_DEFINITION],
   [ELEMENT_CHECKED_FUNCTION_EXPRESSION, ROSIE_ENTITY_FUNCTION_EXPRESSION],
+  [ELEMENT_CHECKED_VARIABLE_DECLARATION, ROSIE_ENTITY_VARIABLE_DECLARATION],
+  [ELEMENT_CHECKED_ANY, ROSIE_ENTITY_ANY],
 ]);

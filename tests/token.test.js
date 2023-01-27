@@ -15,9 +15,9 @@ function setup() {
     // delete our testing config file before starting
     deleteFile(store.path);
     // suppress logs
-    global.console = {
-      log: jest.fn(),
-    };
+    // global.console = {
+    //   log: jest.fn(),
+    // };
   });
   afterEach(() => {
     global.console = {
@@ -106,9 +106,8 @@ describe("codiga token-add", () => {
     await handleAnswers(answers);
 
     // run the command
-    await executeCommand([ACTION_TOKEN_CHECK]).catch(({ stdout }) => {
-      console.log("stfpt", stdout);
-      expect(stdout).toMatch(/No token was found/);
+    await executeCommand([ACTION_TOKEN_CHECK]).catch(({ stderr }) => {
+      expect(stderr).toMatch(/No token was found/);
     });
   });
 });
@@ -118,8 +117,8 @@ describe("codiga token-check", () => {
 
   test("no token", async () => {
     // run the command
-    await executeCommand([ACTION_TOKEN_CHECK]).catch(({ stdout }) => {
-      expect(stdout).toMatch(/No token was found/);
+    await executeCommand([ACTION_TOKEN_CHECK]).catch(({ stderr }) => {
+      expect(stderr).toMatch(/No token was found/);
     });
   });
 
@@ -128,8 +127,8 @@ describe("codiga token-check", () => {
     setToken("bad-token");
 
     // run the command
-    await executeCommand([ACTION_TOKEN_CHECK]).catch(({ stdout }) => {
-      expect(stdout).toMatch(/An invalid token was found/);
+    await executeCommand([ACTION_TOKEN_CHECK]).catch(({ stderr }) => {
+      expect(stderr).toMatch(/An invalid token was found/);
     });
   });
 
@@ -149,8 +148,8 @@ describe("codiga token-delete", () => {
 
   test("no token found", async () => {
     // run the command
-    await executeCommand([ACTION_TOKEN_DELETE]).catch(({ stdout }) => {
-      expect(stdout).toMatch(/No Codiga API token was found to delete/);
+    await executeCommand([ACTION_TOKEN_DELETE]).catch(({ stderr }) => {
+      expect(stderr).toMatch(/No Codiga API token was found to delete/);
     });
   });
 

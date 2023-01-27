@@ -14,6 +14,8 @@ import {
   printEmptyLine,
   printFailure,
   printSuggestion,
+  setPrintToStdErr,
+  setPrintToStdOut,
 } from "./print";
 import { getToken } from "./store";
 import { buildRulesetsQuery } from "./graphql";
@@ -34,11 +36,13 @@ export async function getRulesetsWithRules(names) {
     return rulesetsWithRules;
   } catch (err) {
     // console.debug(err);
+    setPrintToStdErr();
     printFailure("We were unable to fetch your rulesets");
     printCommandSuggestion(
       " ↳ Set a Codiga API token with one of the following commands:",
       ACTION_TOKEN_ADD
     );
+    setPrintToStdOut();
     process.exit(1);
   }
 }
@@ -48,14 +52,22 @@ export async function getRulesetsWithRules(names) {
  * @param {string} path (default = codiga.yml)
  * @returns
  */
-export function getRulesetsFromCodigaFile() {
-  const rootDir = getGitDirectoryRequired();
+export function getRulesetsFromCodigaFile(path) {
+  let rootDir;
+  if (path) {
+    rootDir = path;
+  } else {
+    rootDir = getGitDirectoryRequired();
+  }
 
   const codigaFileLocation = `${rootDir}/${CODIGA_CONFIG_FILE}`;
   const codigaFileContent = readFile(codigaFileLocation);
   if (!codigaFileContent) {
+    setPrintToStdErr();
     printEmptyLine();
-    printFailure(`Unable to read a codiga.yml file`);
+    printFailure(
+      `A codiga.yml file is necessary to continue and one was not found.`
+    );
     printSuggestion(
       " ↳ Please ensure you have a codiga.yml here:",
       codigaFileLocation
@@ -65,12 +77,14 @@ export function getRulesetsFromCodigaFile() {
       "https://app.codiga.io/hub/rulesets"
     );
     printEmptyLine();
+    setPrintToStdOut();
     process.exit(1);
   }
   const parsedFile = parseYamlFile(codigaFileContent, codigaFileLocation);
 
   // if there isn't a rulesets value in the codiga.yml file, throw an error
   if (!parsedFile) {
+    setPrintToStdErr();
     printFailure("We couldn't find a `rulesets` value to get rulesets from");
     printSuggestion(
       " ↳ Ensure you have a `rulesets:` value in: ",
@@ -80,11 +94,13 @@ export function getRulesetsFromCodigaFile() {
       " ↳ You can search for rulesets here:",
       "https://app.codiga.io/hub/rulesets"
     );
+    setPrintToStdOut();
     process.exit(1);
   }
 
   // if there aren't any ruleset items under `rulesets:` in the codiga.yml file, throw an error
   if (!parsedFile.rulesets) {
+    setPrintToStdErr();
     printFailure(
       "We can't look for violations if there are no rulesets listed in your `codiga.yml` file"
     );
@@ -96,6 +112,7 @@ export function getRulesetsFromCodigaFile() {
       " ↳ You can search for more rulesets here:",
       "https://app.codiga.io/hub/rulesets"
     );
+    setPrintToStdOut();
     process.exit(1);
   }
 
@@ -145,11 +162,13 @@ export async function getRulesetsByNames(names) {
 
     return { found, notFound };
   } catch (err) {
+    setPrintToStdErr();
     printFailure("We were unable to fetch those rulesets");
     printSuggestion(
       " ↳ If the issue persists, contact us at:",
       "https://app.codiga.io/support"
     );
+    setPrintToStdOut();
     process.exit(1);
   }
 }

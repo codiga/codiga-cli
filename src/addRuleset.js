@@ -14,6 +14,8 @@ import {
   printInfo,
   printSubItem,
   printSuggestion,
+  setPrintToStdErr,
+  setPrintToStdOut,
 } from "../utils/print";
 import { convertRulesetsToString } from "../utils/rulesets";
 import { getRulesetsByNames, getUserPromptedRulesets } from "../utils/rulesets";
@@ -31,6 +33,7 @@ export async function createCodigaYml(codigaFileLocation, rulesets) {
     });
   } catch (err) {
     // console.debug(err);
+    setPrintToStdErr();
     printEmptyLine();
     printFailure(`We were unable to write to: ${codigaFileLocation}`);
     printSuggestion(
@@ -38,6 +41,7 @@ export async function createCodigaYml(codigaFileLocation, rulesets) {
       "https://app.codiga.io/support"
     );
     printEmptyLine();
+    setPrintToStdOut();
     process.exit(1);
   }
 }
@@ -58,6 +62,7 @@ export async function addRuleset(rulesetNamesParams) {
     rulesetNames = await getUserPromptedRulesets();
     // if the user didn't choose any notify them and exit
     if (rulesetNames.length === 0) {
+      setPrintToStdErr();
       printEmptyLine();
       printInfo("No rulesets were chosen.");
       printCommandSuggestion(
@@ -69,6 +74,7 @@ export async function addRuleset(rulesetNamesParams) {
         "https://app.codiga.io/hub/rulesets"
       );
       printEmptyLine();
+      setPrintToStdOut();
       process.exit(1);
     }
   }
@@ -99,6 +105,7 @@ export async function addRuleset(rulesetNamesParams) {
   }
 
   if (validRulesets.length === 0) {
+    setPrintToStdErr();
     printEmptyLine();
     printInfo("No valid rulesets were found to continue");
     printCommandSuggestion(
@@ -106,6 +113,7 @@ export async function addRuleset(rulesetNamesParams) {
       ACTION_TOKEN_ADD
     );
     printEmptyLine();
+    setPrintToStdOut();
     process.exit(1);
   }
 

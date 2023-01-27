@@ -38,8 +38,8 @@ describe("codiga git-push-hook", () => {
       "1234",
       "--local-sha",
       "5678",
-    ]).catch(({ stdout }) => {
-      expect(stdout).toMatch(/We were unable to fetch your rulesets/);
+    ]).catch(({ stderr }) => {
+      expect(stderr).toMatch(/We were unable to fetch your rulesets/);
     });
   });
 });

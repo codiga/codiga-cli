@@ -17,6 +17,8 @@ import {
   printSuccess,
   printSuggestion,
   printViolation,
+  setPrintToStdErr,
+  setPrintToStdOut,
 } from "../utils/print";
 import { BLANK_SHA } from "../utils/constants";
 import { isTestMode } from "../tests/test-utils";
@@ -35,6 +37,7 @@ function getChangedFilePaths(remoteSHA, localSHA) {
     localSHA,
   ]);
   if (!diff) {
+    setPrintToStdErr();
     printEmptyLine();
     printFailure(
       `We were unable to get the difference between ${remoteSHA} and ${localSHA}`
@@ -44,6 +47,7 @@ function getChangedFilePaths(remoteSHA, localSHA) {
       "https://app.codiga.io/support"
     );
     printEmptyLine();
+    setPrintToStdOut();
     process.exit(1);
   }
   return diff.split("\n").filter((s) => s);
@@ -103,16 +107,18 @@ export function checkSHAs(remoteShaArg, localShaArg) {
  */
 export async function checkPush(remoteShaArg, localShaArg) {
   if (!remoteShaArg || !localShaArg) {
+    setPrintToStdErr();
     printFailure("You need to pass in both remote and local SHA values");
     printSuggestion(
       " ↳ Refer to our documentation for more info:",
       "https://doc.codiga.io/docs/cli/#analysis-and-report-issues-between-two-commits"
     );
+    setPrintToStdOut();
     process.exit(1);
   }
 
   // ensure that there's a git directory to continue
-  getGitDirectoryRequired();
+  const rootDir = getGitDirectoryRequired();
 
   // check and verify the SHA args
   const { remoteSha, localSha } = checkSHAs(remoteShaArg, localShaArg);
@@ -130,7 +136,11 @@ export async function checkPush(remoteShaArg, localShaArg) {
   const changedFilePaths = getChangedFilePaths(remoteSha, localSha);
 
   // we analyze all the changed files and get back a list of violations and (network) errors
-  const { violations, errors } = await analyzeFiles(changedFilePaths, rules);
+  const { violations, errors } = await analyzeFiles(
+    changedFilePaths,
+    rules,
+    rootDir
+  );
 
   // print out our violations
   if (violations.length === 0) {
@@ -166,6 +176,7 @@ export async function checkPush(remoteShaArg, localShaArg) {
   if (violations.length === 0 && errors.length === 0) {
     process.exit(0);
   } else {
+    setPrintToStdErr();
     printEmptyLine();
     printInfo("Do you consider these violations as false positives?");
     printSuggestion(
@@ -177,6 +188,7 @@ export async function checkPush(remoteShaArg, localShaArg) {
       "https://app.codiga.io/hub/rulesets"
     );
     printEmptyLine();
+    setPrintToStdOut();
     process.exit(1);
   }
 }

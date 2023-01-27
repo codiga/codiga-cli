@@ -4,6 +4,10 @@
  */
 
 module.exports = {
+  moduleNameMapper: {
+    "^csv-stringify/dist/esm/sync":
+      "<rootDir>/node_modules/csv-stringify/dist/cjs/sync",
+  },
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 
