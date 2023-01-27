@@ -15,9 +15,14 @@ import {
 
 /**
  * Formats and outputs the violations accordingly
- * @param {{violations, output, format}}
+ * @param {{violations, output, format, analysisTime}}
  */
-export async function formatAndOutputAnalysis({ violations, output, format }) {
+export async function formatAndOutputAnalysis({
+  violations,
+  output,
+  format,
+  analysisTime,
+}) {
   const formattedViolations = violations.map((violation) => ({
     filename: `${violation.filename}:${violation.start.line}:${violation.start.col}`,
     message: violation.message,
@@ -48,7 +53,7 @@ export async function formatAndOutputAnalysis({ violations, output, format }) {
     }, "Filename - Message (Severity/Category)\n");
   }
 
-  await outputAnalysis(output, content, violations.length);
+  await outputAnalysis(output, content, violations.length, analysisTime);
 }
 
 /**
@@ -56,8 +61,14 @@ export async function formatAndOutputAnalysis({ violations, output, format }) {
  * @param {string} outputFile
  * @param {string} content
  * @param {number} numOfViolations
+ * @param {number} analysisTime
  */
-async function outputAnalysis(outputFile, content, numOfViolations) {
+async function outputAnalysis(
+  outputFile,
+  content,
+  numOfViolations,
+  analysisTime
+) {
   printEmptyLine();
 
   // outputting the results right onto the stdout
@@ -66,7 +77,7 @@ async function outputAnalysis(outputFile, content, numOfViolations) {
     console.log(content);
     console.log("---------RESULTS END----------");
     printEmptyLine();
-    printSuccess("Codiga analysis complete");
+    printSuccess(`Codiga analysis completed in ${analysisTime} sec`);
     printSuggestion(
       ` ↳ ${numOfViolations} violation${
         numOfViolations === 1 ? " was" : "s were"
@@ -83,7 +94,7 @@ async function outputAnalysis(outputFile, content, numOfViolations) {
     await writeFile(outputFile, content);
     // check if the file was created
     if (existsSync(outputFile)) {
-      printSuccess("Codiga analysis complete");
+      printSuccess(`Codiga analysis completed in ${analysisTime} sec`);
       printSuggestion(
         ` ↳ ${numOfViolations} violation${
           numOfViolations === 1 ? " was" : "s were"

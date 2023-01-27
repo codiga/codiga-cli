@@ -1,4 +1,5 @@
 import path from "path";
+import { performance } from "perf_hooks";
 import { ACTION_TOKEN_ADD } from "../utils/constants";
 import { getAllDirectoryFiles, getIsDirectory } from "../utils/directory";
 import { formatAndOutputAnalysis } from "../utils/output";
@@ -18,11 +19,14 @@ import {
   getRulesetsFromCodigaFile,
   getRulesetsWithRules,
 } from "../utils/rulesets";
+import { getDifferenceInSecs } from "../utils/time";
 
 export async function analyze(
   givenFileOrDir,
   { output, followSymlinks, format, rulesets: givenRulesets }
 ) {
+  const analysisStart = performance.now();
+
   // get the given path or set the default to the current location
   const fileOrDir = givenFileOrDir[0] || "./";
 
@@ -126,13 +130,16 @@ export async function analyze(
     printEmptyLine();
   }
 
+  const analysisEnd = performance.now();
+  const analysisTime = getDifferenceInSecs(analysisStart, analysisEnd);
+
   if (violations.length === 0) {
     printEmptyLine();
-    printSuccess("Codiga analysis complete");
+    printSuccess(`Codiga analysis completed in ${analysisTime} sec`);
     console.log(" ↳ 0 violations were reported");
     printEmptyLine();
   } else {
-    await formatAndOutputAnalysis({ violations, output, format });
+    await formatAndOutputAnalysis({ violations, output, format, analysisTime });
   }
 
   process.exit(0);
