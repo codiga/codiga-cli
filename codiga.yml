@@ -1,0 +1,4 @@
+rulesets:
+  - jestjs
+  - javascript-client-security
+  - javascript-inclusive
