@@ -11,6 +11,8 @@ import {
   printFailure,
   printSuccess,
   printSuggestion,
+  setPrintToStdErr,
+  setPrintToStdOut,
 } from "./print";
 
 /**
@@ -104,12 +106,14 @@ async function outputAnalysis(
       printEmptyLine();
       process.exit(0);
     } else {
+      setPrintToStdErr();
       printFailure("An error occurred while creating your results file");
       printSuggestion(
         " ↳ Please try again and contact us, if the issue persists:",
         "https://app.codiga.io/support"
       );
       printEmptyLine();
+      setPrintToStdOut();
       process.exit(1);
     }
   }

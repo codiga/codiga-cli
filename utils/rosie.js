@@ -5,7 +5,14 @@ import { encodeToBase64 } from "../utils/encoding";
 import { rosieApiFetch } from "./api";
 import { getLanguageForFile, readFileRequired } from "./file";
 import { getRulesForRosiePerLanguage } from "./rules";
-import { printEmptyLine, printFailure, printInfo, printSubItem } from "./print";
+import {
+  printEmptyLine,
+  printFailure,
+  printInfo,
+  printSubItem,
+  setPrintToStdErr,
+  setPrintToStdOut,
+} from "./print";
 import {
   CONCURRENT_ROSIE_REQUESTS_COUNT,
   IGNORED_FILES_LISTED_COUNT,
@@ -152,7 +159,9 @@ export async function analyzeFiles(paths, rules, rootDir) {
             .catch((err) => {
               task.title = getTitle(filesAndRules.length, limit.pendingCount);
               clearInterval(intervalId);
+              setPrintToStdErr();
               printFailure(err.message);
+              setPrintToStdOut();
               process.exit(1);
             });
         },
@@ -169,7 +178,9 @@ export async function analyzeFiles(paths, rules, rootDir) {
     };
   } catch (err) {
     // console.debug(err);
+    setPrintToStdErr();
     printFailure(err.message);
+    setPrintToStdOut();
     process.exit(1);
   }
 }

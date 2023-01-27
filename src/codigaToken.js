@@ -9,6 +9,8 @@ import {
   printInfo,
   printSuccess,
   printCommandSuggestion,
+  setPrintToStdErr,
+  setPrintToStdOut,
 } from "../utils/print";
 import { setToken, getToken, deleteToken, store } from "../utils/store";
 
@@ -54,20 +56,24 @@ export async function checkCodigaToken() {
       );
       process.exit(0);
     } else {
+      setPrintToStdErr();
       printInfo("An invalid token was found");
       printSuggestion(`Tokens can be found here:`, store.path);
       printCommandSuggestion(
         " ↳ To override it, run one of the following commands:",
         ACTION_TOKEN_ADD
       );
+      setPrintToStdOut();
       process.exit(1);
     }
   } else {
+    setPrintToStdErr();
     printInfo("No token was found.");
     printCommandSuggestion(
       " ↳ To set an API token, run one of the following commands:",
       ACTION_TOKEN_ADD
     );
+    setPrintToStdOut();
     process.exit(1);
   }
 }
@@ -125,12 +131,14 @@ export async function deleteCodigaToken() {
     deleteToken();
     // ensure the token was deleted
     if (getToken()) {
+      setPrintToStdErr();
       printFailure("We couldn't delete your Codiga API token");
       printSuggestion(`Tokens can be found here:`, store.path);
       printSuggestion(
         " ↳ If the issue persists, contact us at:",
         "https://app.codiga.io/support"
       );
+      setPrintToStdOut();
       process.exit(1);
     } else {
       printSuccess("Codiga API token deleted");
@@ -142,11 +150,13 @@ export async function deleteCodigaToken() {
       process.exit(0);
     }
   } else {
+    setPrintToStdErr();
     printInfo("No Codiga API token was found to delete");
     printCommandSuggestion(
       " ↳ To set a Codiga API token, run one of the following commands:",
       ACTION_TOKEN_ADD
     );
+    setPrintToStdOut();
     process.exit(1);
   }
 }

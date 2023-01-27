@@ -11,6 +11,8 @@ import {
   printSubItem,
   printSuccess,
   printSuggestion,
+  setPrintToStdErr,
+  setPrintToStdOut,
 } from "../utils/print";
 import { analyzeFiles } from "../utils/rosie";
 import { convertRulesetsToRules } from "../utils/rules";
@@ -32,7 +34,9 @@ export async function analyze(
 
   const isDirectory = await getIsDirectory(fileOrDir);
   if (isDirectory === null) {
+    setPrintToStdErr();
     printFailure(`No such file or directory to analyze: ${fileOrDir}`);
+    setPrintToStdOut();
     process.exit(1);
   }
 
@@ -53,6 +57,7 @@ export async function analyze(
     if (isDirectory) {
       rulesetNames = await getRulesetsFromCodigaFile(rootPath);
     } else {
+      setPrintToStdErr();
       printEmptyLine();
       printFailure(`No rulesets were given to analyze this file: ${rootPath}`);
       printSuggestion(
@@ -60,6 +65,7 @@ export async function analyze(
         "codiga analyze file.txt --ruleset fake-ruleset"
       );
       printEmptyLine();
+      setPrintToStdOut();
       process.exit(1);
     }
   }
@@ -83,6 +89,7 @@ export async function analyze(
   }
 
   if (validRulesets.length === 0) {
+    setPrintToStdErr();
     printEmptyLine();
     printInfo("No valid rulesets were found to continue");
     printCommandSuggestion(
@@ -90,6 +97,7 @@ export async function analyze(
       ACTION_TOKEN_ADD
     );
     printEmptyLine();
+    setPrintToStdOut();
     process.exit(1);
   } else {
     printEmptyLine();

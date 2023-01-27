@@ -1,5 +1,11 @@
 import child_process from "child_process";
-import { printEmptyLine, printFailure, printSuggestion } from "./print";
+import {
+  printEmptyLine,
+  printFailure,
+  printSuggestion,
+  setPrintToStdErr,
+  setPrintToStdOut,
+} from "./print";
 import { isTestMode } from "../tests/test-utils";
 
 /**
@@ -48,11 +54,13 @@ export function getGitDirectoryRequired() {
   if (rootDirectory) {
     return rootDirectory.split("\n").join("");
   } else {
+    setPrintToStdErr();
     printEmptyLine();
     printFailure(
       "Unable to execute a git command because you're not in a git repository"
     );
     printEmptyLine();
+    setPrintToStdOut();
     process.exit(1);
   }
 }

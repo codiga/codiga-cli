@@ -24,6 +24,8 @@ import {
   printCommandSuggestion,
   printEmptyLine,
   printFailure,
+  setPrintToStdErr,
+  setPrintToStdOut,
 } from "../utils/print";
 import { checkPush } from "./checkPush";
 import {
@@ -109,16 +111,20 @@ function parseCommand(args) {
 
   // we need at least one action
   if (numOfActionsReceived === 0) {
+    setPrintToStdErr();
     printEmptyLine();
     yargs.showHelp();
     printEmptyLine();
+    setPrintToStdOut();
     process.exit(1);
   }
 
   // more than one action isn't supported
   if (numOfActionsReceived > 1) {
+    setPrintToStdErr();
     printFailure("Combining two command actions together isn't supported");
     printCommandSuggestion("View available commands by running:", "--help");
+    setPrintToStdOut();
     process.exit(1);
   }
 
@@ -182,9 +188,11 @@ export async function cli(args) {
       });
     default:
       return (() => {
+        setPrintToStdErr();
         printEmptyLine();
         yargs.showHelp();
         printEmptyLine();
+        setPrintToStdOut();
         process.exit(1);
       })();
   }

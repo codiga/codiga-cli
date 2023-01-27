@@ -2,7 +2,13 @@ import fs from "fs";
 import YAML from "yaml";
 import { extname } from "path";
 import { ROSIE_SUPPORTED_SUFFIX_TO_LANGUAGE } from "./constants";
-import { printEmptyLine, printFailure, printSuggestion } from "./print";
+import {
+  printEmptyLine,
+  printFailure,
+  printSuggestion,
+  setPrintToStdErr,
+  setPrintToStdOut,
+} from "./print";
 
 /**
  * Used to read a file
@@ -29,6 +35,7 @@ export function readFileRequired(path) {
     const file = fs.readFileSync(path, "utf8");
     return file;
   } catch (err) {
+    setPrintToStdErr();
     printEmptyLine();
     printFailure(`Unable to read file: ${path}`);
     printSuggestion(
@@ -36,6 +43,7 @@ export function readFileRequired(path) {
       "https://app.codiga.io/support"
     );
     printEmptyLine();
+    setPrintToStdOut();
     process.exit(1);
   }
 }
@@ -50,6 +58,7 @@ export function parseYamlFile(content, path) {
     const parsedFile = YAML.parse(content);
     return parsedFile;
   } catch (err) {
+    setPrintToStdErr();
     printEmptyLine();
     printFailure(`Unable to parse YAML file${path ? `: ${path}` : ""}`);
     console.log(" ↳ Ensure your file is valid YAML syntax.");
@@ -58,6 +67,7 @@ export function parseYamlFile(content, path) {
       "https://jsonformatter.org/yaml-parser"
     );
     printEmptyLine();
+    setPrintToStdOut();
     process.exit(1);
   }
 }

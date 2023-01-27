@@ -5,7 +5,7 @@ describe("codiga ruleset-add with parameters", () => {
   test("1 invalid, 0 valid ruleset; show proper notices", async () => {
     // run the command
     await executeCommand([ACTION_RULESET_ADD, "invalid-ruleset"]).catch(
-      ({ stdout }) => {
+      ({ stdout, stderr }) => {
         // check that there are notices for the invalid ruleset
         expect(stdout).toMatch(
           /The following rulesets either don't exist or you lack the permissions to access it/
@@ -16,7 +16,7 @@ describe("codiga ruleset-add with parameters", () => {
           /The following rulesets already exists in your/
         );
         // check that there are notices for valid rulesets
-        expect(stdout).toMatch(/No valid rulesets were found to continue/);
+        expect(stderr).toMatch(/No valid rulesets were found to continue/);
       }
     );
   });
