@@ -48,14 +48,21 @@ export async function getRulesetsWithRules(names) {
  * @param {string} path (default = codiga.yml)
  * @returns
  */
-export function getRulesetsFromCodigaFile() {
-  const rootDir = getGitDirectoryRequired();
+export function getRulesetsFromCodigaFile(path) {
+  let rootDir;
+  if (path) {
+    rootDir = path;
+  } else {
+    rootDir = getGitDirectoryRequired();
+  }
 
   const codigaFileLocation = `${rootDir}/${CODIGA_CONFIG_FILE}`;
   const codigaFileContent = readFile(codigaFileLocation);
   if (!codigaFileContent) {
     printEmptyLine();
-    printFailure(`Unable to read a codiga.yml file`);
+    printFailure(
+      `A codiga.yml file is necessary to continue and one was not found.`
+    );
     printSuggestion(
       " ↳ Please ensure you have a codiga.yml here:",
       codigaFileLocation

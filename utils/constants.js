@@ -7,10 +7,26 @@ export const ACTION_TOKEN_CHECK = "token-check";
 export const ACTION_TOKEN_DELETE = "token-delete";
 export const ACTION_GIT_PUSH_HOOK = "git-push-hook";
 export const ACTION_RULESET_ADD = "ruleset-add";
+export const ACTION_ANALYZE = "analyze";
 
 // COMMAND OPTIONS
 export const OPTION_REMOTE_SHA = "remote-sha";
 export const OPTION_LOCAL_SHA = "local-sha";
+export const OPTION_OUT = "out";
+export const OPTION_FOLLOW_SYMLINKS = "follow-symlinks";
+export const OPTION_FORMAT = "format";
+export const OPTION_RULESET = "ruleset";
+
+// COMMAND OPTION ALIASES
+export const OPTION_OUT_ALIAS = "o";
+export const OPTION_FORMAT_ALIAS = "f";
+export const OPTION_RULESET_ALIAS = "r";
+
+// COMMAND OPTION HELPERS
+export const OPTION_OUT_DEFAULT = "stdout";
+export const OPTION_FORMAT_TEXT = "text";
+export const OPTION_FORMAT_JSON = "json";
+export const OPTION_FORMAT_CSV = "csv";
 
 // URLs
 export const GRAPHQL_STAGING_URL = "https://api-staging.codiga.io/graphql";
