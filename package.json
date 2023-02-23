@@ -15,7 +15,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules npx jest"
+    "test": "cross-env NODE_ENV=test DD_SITE=datadoghq.com NODE_OPTIONS=\"-r dd-trace/ci/init --experimental-vm-modules\" DD_ENV=ci DD_SERVICE=codiga-cli npx jest"
   },
   "keywords": [
     "Codiga",
@@ -45,6 +45,7 @@
     "@babel/preset-env": "^7.20.2",
     "babel-jest": "^29.3.1",
     "cross-env": "^7.0.3",
+    "dd-trace": "^3.14.1",
     "jest": "^29.3.1",
     "tempy": "^1.0.1"
   },
