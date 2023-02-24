@@ -16,4 +16,8 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm install
       - run: npm link
-      - run: npm run test
+      - name: Run tests
+        run: npm run test
+        env: 
+          DD_CIVISIBILITY_AGENTLESS_ENABLED: ${{ secrets.DD_CIVISIBILITY_AGENTLESS_ENABLED }}
+          DD_API_KEY: ${{ secrets.DATADOG_API_KEY }}
