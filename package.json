@@ -15,7 +15,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "cross-env NODE_ENV=test DD_SITE=datadoghq.com NODE_OPTIONS=\"-r dd-trace/ci/init --experimental-vm-modules\" DD_ENV=ci DD_SERVICE=codiga-cli npx jest"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=\"-r dd-trace/ci/init\" DD_ENV=ci DD_SERVICE=codiga-cli jest"
   },
   "keywords": [
     "Codiga",
