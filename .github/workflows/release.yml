@@ -12,10 +12,8 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: Install packages
-        run: npm install
-      - name: Symlink CLI package
-        run: npm link
+      - name: Prepare Package
+        run: npm run prepare-package
       - name: Run tests
         run: npm run test
         env: 

@@ -8,3 +8,4 @@ jest.config.js
 .github
 .vscode
 codiga-cli*.tgz
+scripts

@@ -1,6 +1,6 @@
 {
   "name": "@codiga/cli",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A Codiga CLI used to integrate Codiga easily in your projects",
   "homepage": "https://github.com/codiga/codiga-cli",
   "repository": {
@@ -15,6 +15,7 @@
     "access": "public"
   },
   "scripts": {
+    "prepare-package": "./scripts/prepare-package.sh",
     "test": "cross-env NODE_ENV=test jest"
   },
   "keywords": [
@@ -23,31 +24,31 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "arg": "^5.0.2",
-    "chalk": "^4.1.2",
-    "conf": "^10.2.0",
-    "csv-stringify": "^6.2.3",
-    "esm": "^3.2.25",
-    "esm-wallaby": "^3.2.26",
-    "execa": "^6.1.0",
-    "globby": "^13.1.3",
-    "graphql": "^16.6.0",
+    "arg": "5.0.2",
+    "chalk": "4.1.2",
+    "conf": "10.2.0",
+    "csv-stringify": "6.2.3",
+    "esm": "3.2.25",
+    "esm-wallaby": "3.2.26",
+    "execa": "6.1.0",
+    "globby": "13.1.3",
+    "graphql": "16.6.0",
     "graphql-request": "^5.1.0",
     "inquirer": "8.2.3",
-    "listr2": "^5.0.6",
-    "node-fetch": "^2.6.7",
+    "listr2": "5.0.6",
+    "node-fetch": "2.6.7",
     "p-limit": "3.1.0",
     "yaml": "1.10.2",
-    "yargs": "^17.6.2"
+    "yargs": "17.6.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.12",
-    "@babel/preset-env": "^7.20.2",
-    "babel-jest": "^29.3.1",
-    "cross-env": "^7.0.3",
-    "dd-trace": "^3.14.1",
-    "jest": "^29.3.1",
-    "tempy": "^1.0.1"
+    "@babel/core": "7.20.12",
+    "@babel/preset-env": "7.20.2",
+    "babel-jest": "29.3.1",
+    "cross-env": "7.0.3",
+    "dd-trace": "3.14.1",
+    "jest": "29.3.1",
+    "tempy": "1.0.1"
   },
   "bugs": {
     "url": "https://github.com/codiga/codiga-cli/issues"
