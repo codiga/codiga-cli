@@ -1,3 +1,5 @@
+[Datadog acquired Codiga](https://www.codiga.io/blog/codiga-joins-datadog/). This repository is no longer active.
+
 # Codiga CLI
 
 This CLI tool is intended to make interacting with Codiga as smooth as possible.
